@@ -91,8 +91,8 @@ CREATE TABLE UserHasGame (
 ) ENGINE = InnoDB;
 
 CREATE TABLE GameIsGenre (
-  GameIdFk INT NOT NULL UNIQUE,
-  GenreIdFk INT,
+  GameIdFk INT NOT NULL,
+  GenreIdFk INT NOT NULL,
   CONSTRAINT GameIsGenreGamesFk
     FOREIGN KEY (GameIdFk)
     REFERENCES Games (GameId)
@@ -105,7 +105,7 @@ CREATE TABLE GameIsGenre (
 
 CREATE TABLE GameOnPlatform (
   GameIdFk INT NOT NULL,
-  PlatformIdFk INT,
+  PlatformIdFk INT NOT NULL,
   CONSTRAINT GameOnPlatformGamesFk
     FOREIGN KEY (GameIdFk)
     REFERENCES Games (GameId)
@@ -210,6 +210,7 @@ LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/metacriticGameIn
 -- Insert publisher and Platfor information for games   
 INSERT IGNORE INTO Publishers (PublisherName) SELECT DISTINCT Publisher FROM rawMetaCriticGame;
 INSERT IGNORE INTO Platforms (PlatformName) SELECT DISTINCT Platform FROM rawMetaCriticGame;
+INSERT IGNORE INTO Genres (Genre) SELECT DISTINCT Genre FROM rawMetaCriticGame;
 
 -- Update and insert games that do not have steam reviews into games table.
 INSERT INTO games (GameName, PublisherIdFk, ReleaseYear)
@@ -220,6 +221,14 @@ INNER JOIN publishers
 ON DUPLICATE KEY UPDATE
 PublisherIdFk = publishers.PublisherId,
 ReleaseYear = rawmetacriticgame.TheYear;
+
+-- Map games to genres (games can have more than one genre)
+INSERT IGNORE INTO gameisgenre (GameIdFk, GenreIdFk)  (SELECT games.GameId, genres.GenreId
+FROM games
+INNER JOIN rawmetacriticgame 
+  ON games.GameName = rawmetacriticgame.Title
+INNER JOIN genres 
+  ON rawmetacriticgame.Genre = genres.Genre);
    
 LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/vgchartz12042019.csv' INTO TABLE rawVgchartzGame
  FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
@@ -238,14 +247,6 @@ INSERT IGNORE INTO Publishers (PublisherName) SELECT DISTINCT Publisher FROM raw
 INSERT IGNORE INTO Platforms (PlatformName) SELECT DISTINCT Platform FROM rawVgchartzGame;
 INSERT IGNORE INTO Genres (Genre) SELECT DISTINCT Genre FROM rawVgchartzGame;
 
--- Fill in the platform information for games (games can be on multiple platforms
-INSERT INTO GameOnPlatform SELECT games.GameId, platforms.PlatformId 
-FROM games
-  INNER JOIN rawvgchartzgame
-    ON games.GameName = rawvgchartzgame.TheName
-  INNER JOIN platforms
-    ON rawvgchartzgame.Platform = platforms.PlatformName;
-
 -- Update our games table with new entries
 INSERT INTO games (GameName, PublisherIdFk, ReleaseYear)
 SELECT rawvgchartzgame.TheName, publishers.PublisherId, rawvgchartzgame.TheYear
@@ -256,7 +257,15 @@ ON DUPLICATE KEY UPDATE
 PublisherIdFk = publishers.PublisherId,
 ReleaseYear = rawvgchartzgame.TheYear;
 
--- Map games to genres (games can have more than one genre
+-- Fill in the platform information for games (games can be on multiple platforms
+INSERT INTO GameOnPlatform SELECT games.GameId, platforms.PlatformId 
+FROM games
+  INNER JOIN rawvgchartzgame
+    ON games.GameName = rawvgchartzgame.TheName
+  INNER JOIN platforms
+    ON rawvgchartzgame.Platform = platforms.PlatformName;
+
+-- Map games to genres (games can have more than one genre)
 INSERT IGNORE INTO gameisgenre (GameIdFk, GenreIdFk)  (SELECT games.GameId, genres.GenreId
 FROM games
 INNER JOIN rawvgchartzgame 
