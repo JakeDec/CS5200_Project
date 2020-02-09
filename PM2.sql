@@ -335,11 +335,13 @@ LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/metacriticCritic
 
 INSERT IGNORE INTO Games (GameName) SELECT DISTINCT Game FROM rawMetaCriticGameReviews;
   
--- INSERT INTO rawMetaCriticGameReviewsFixed 
---   SELECT rawSteamUserReviews.CriticName, rawSteamUserReviews.Review, games.GameId, rawSteamUserReviews.Score
---   FROM rawSteamUserReviews
--- INNER JOIN games
---   ON publishers.PublisherName = rawvgchartzgame.Publisher
+INSERT INTO rawMetaCriticGameReviewsFixed (CriticName,Review,Game,Score)
+  SELECT rawMetaCriticGameReviews.CriticName, rawMetaCriticGameReviews.Review, games.GameId, rawMetaCriticGameReviews.Score
+  FROM rawMetaCriticGameReviews
+INNER JOIN games
+  ON games.GameName = rawMetaCriticGameReviews.Game;
+  
+
 
 DELIMITER $$
 CREATE PROCEDURE CriticReviewInsert(
