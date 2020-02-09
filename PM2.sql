@@ -4,7 +4,9 @@ USE GameRater;
 DROP TABLE IF EXISTS GameIsGenre;
 DROP TABLE IF EXISTS GameOnPlatform;
 DROP TABLE IF EXISTS UserHasGame;
+DROP TABLE IF EXISTS CriticReviews;
 DROP TABLE IF EXISTS UserReviews;
+DROP TABLE IF EXISTS Reviews;
 DROP TABLE IF EXISTS Games;
 DROP TABLE IF EXISTS Users;
 DROP TABLE IF EXISTS Platforms;
@@ -16,7 +18,9 @@ DROP TABLE IF EXISTS rawSteamUserReviews;
 DROP TABLE IF EXISTS rawidToUsername;
 DROP TABLE IF EXISTS rawMetaCriticGame;
 DROP TABLE IF EXISTS rawVgchartzGame;
+DROP TABLE IF EXISTS rawMetaUserComments;
 DROP TABLE IF EXISTS rawMetaCriticGameReviews;
+DROP TABLE IF EXISTS rawMetaCriticGameReviewsFixed;
 
 CREATE TABLE Platforms (
   PlatformId INT NOT NULL UNIQUE AUTO_INCREMENT,
@@ -60,20 +64,6 @@ CREATE TABLE Games (
     ON UPDATE CASCADE ON DELETE SET NULL
 ) ENGINE = InnoDB;
 
-CREATE TABLE UserReviews (
-  UserIdFk INT NOT NULL,
-  GameIdFK INT NOT NULL,
-  Review TEXT,
-  CONSTRAINT UserReviewsUsersFK
-    FOREIGN KEY (UserIdFk)
-    REFERENCES Users (UserId)
-    ON UPDATE CASCADE ON DELETE CASCADE,
-  CONSTRAINT UserReviewsGamesrFK
-    FOREIGN KEY (GameIdFk)
-    REFERENCES Games (GameId)
-    ON UPDATE CASCADE ON DELETE CASCADE
-) ENGINE = InnoDB;
-
 CREATE TABLE UserHasGame (
   UserIdFk INT NOT NULL,
   GameIdFk INT NOT NULL,
@@ -112,7 +102,42 @@ CREATE TABLE GameOnPlatform (
     ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT GameOnPlatformGenresFk
     FOREIGN KEY (PlatformIdFk)
-    REFERENCES Platform (PlatformId)
+    REFERENCES Platforms (PlatformId)
+    ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE = InnoDB;
+
+CREATE TABLE Reviews (
+  ReviewId INT NOT NULL UNIQUE AUTO_INCREMENT,
+  GameIdFK INT NOT NULL,
+  Review TEXT,
+  CONSTRAINT ReviewsGamesFK
+    FOREIGN KEY (GameIdFk)
+    REFERENCES Games (GameId)
+    ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE = InnoDB;
+
+
+CREATE TABLE UserReviews (
+  ReviewIdFk INT NOT NULL,
+  UserIdFk INT NOT NULL,
+  Score DECIMAL,
+  CONSTRAINT UserReviewsReviewFk
+    FOREIGN KEY (ReviewIdFk)
+    REFERENCES Reviews (ReviewId)
+    ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT UserReviewsUsersFk
+    FOREIGN KEY (UserIdFk)
+    REFERENCES Users (UserId)
+    ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE = InnoDB;
+
+CREATE TABLE CriticReviews (
+  ReviewIdFk INT NOT NULL,
+  CriticName VARCHAR(255),
+  Score DECIMAL,
+  CONSTRAINT CriticReviewsReviewFk
+    FOREIGN KEY (ReviewIdFk)
+    REFERENCES Reviews (ReviewId)
     ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE = InnoDB;
 
@@ -157,7 +182,7 @@ CREATE TABLE rawVgchartzGame (
 ) ENGINE = InnoDB;
 
 CREATE TABLE rawMetaCriticGameReviews (
-  TheName varchar(255),
+  CriticName varchar(255),
   Review TEXT,
   Game varchar(255),
   Platform varchar(255), 
@@ -165,8 +190,24 @@ CREATE TABLE rawMetaCriticGameReviews (
   TheDate DATE
 ) ENGINE = InnoDB;
 
+CREATE TABLE rawMetaCriticGameReviewsFixed (
+  CriticName varchar(255),
+  Review TEXT,
+  Game INT,
+  Score FLOAT NULL
+) ENGINE = InnoDB;
 
-LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/Steam.csv' INTO TABLE rawSteamUserReviews
+CREATE TABLE rawMetaUserComments (
+CommentID INT,
+GameName TEXT,
+Platform VARCHAR(255),
+UserScore INT,
+MetaComment TEXT,
+UserName TEXT
+) ENGINE = InnoDB;
+
+
+LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/Steam.csv' IGNORE INTO TABLE rawSteamUserReviews
  FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
  LINES TERMINATED BY '\n';
  
@@ -273,10 +314,91 @@ INNER JOIN rawvgchartzgame
 INNER JOIN genres 
   ON rawvgchartzgame.Genre = genres.Genre);
   
+LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/metacriticUserComments_1.csv' IGNORE INTO TABLE rawMetaUserComments
+ CHARACTER SET 'utf8'
+ FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' ESCAPED BY "\\"
+ LINES TERMINATED BY '\n'
+ IGNORE 1 LINES;
+ 
+INSERT IGNORE INTO Users (UserName) SELECT UserName FROM rawMetaUserComments;
+  
 LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/metacriticCriticReviews.csv' IGNORE INTO TABLE rawMetaCriticGameReviews
  FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
  LINES TERMINATED BY '\n'
  IGNORE 1 LINES
- (TheName,Review,Game,Platform,Score,@TheDate) 
+ (CriticName,Review,Game,Platform,Score,@TheDate)
  SET
-	TheDate = STR_TO_DATE(@TheDate, "%b %e, %Y");
+  TheDate = STR_TO_DATE(@TheDate, "%M %d, %Y"); 
+
+
+INSERT IGNORE INTO Games (GameName) SELECT DISTINCT Game FROM rawMetaCriticGameReviews;
+  
+-- INSERT INTO rawMetaCriticGameReviewsFixed 
+--   SELECT rawSteamUserReviews.CriticName, rawSteamUserReviews.Review, games.GameId, rawSteamUserReviews.Score
+--   FROM rawSteamUserReviews
+-- INNER JOIN games
+--   ON publishers.PublisherName = rawvgchartzgame.Publisher
+
+DELIMITER $$
+CREATE PROCEDURE CriticReviewInsert(
+    GameIdFK INT, 
+    Review TEXT,
+    CriticName VARCHAR(255),
+    Score DECIMAL
+)
+
+BEGIN
+    DECLARE review_id INT DEFAULT 0;
+    
+    START TRANSACTION;
+    -- Insert review data
+    INSERT INTO review(GameIdFK, Review)
+    VALUES(GameIdFK, Review);
+    
+    -- get review_id
+    SET review_id= LAST_INSERT_ID();
+    
+    -- insert review into critic account
+    IF review_id > 0 THEN
+    INSERT INTO criticreviews(ReviewIdFk, CriticName, Score)
+        VALUES(review_id,CriticName,Score);
+        -- commit
+        COMMIT;
+     ELSE
+    ROLLBACK;
+    END IF;
+END$$
+ 
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE UserReviewInsert(
+    GameIdFK INT, 
+    Review TEXT,
+    UserID INT,
+    Score DECIMAL
+)
+
+BEGIN
+    DECLARE review_id INT DEFAULT 0;
+    
+    START TRANSACTION;
+    -- Insert review data
+    INSERT INTO review(GameIdFK, Review)
+    VALUES(GameIdFK, Review);
+    
+    -- get review_id
+    SET review_id= LAST_INSERT_ID();
+    
+    -- insert review into critic account
+    IF review_id > 0 THEN
+    INSERT INTO userreviews(ReviewIdFk, UserIdFk, Score)
+        VALUES(review_id,UserID,Score);
+        -- commit
+        COMMIT;
+     ELSE
+    ROLLBACK;
+    END IF;
+END$$
+ 
+DELIMITER ;
