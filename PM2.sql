@@ -22,6 +22,9 @@ DROP TABLE IF EXISTS rawMetaUserComments;
 DROP TABLE IF EXISTS rawMetaCriticGameReviews;
 DROP TABLE IF EXISTS rawMetaCriticGameReviewsFixed;
 
+DROP PROCEDURE IF EXISTS CriticReviewInsert;
+DROP PROCEDURE IF EXISTS UserReviewInsert;
+
 CREATE TABLE Platforms (
   PlatformId INT NOT NULL UNIQUE AUTO_INCREMENT,
   PlatformName VARCHAR(50) NOT NULL UNIQUE,
@@ -120,7 +123,7 @@ CREATE TABLE Reviews (
 CREATE TABLE UserReviews (
   ReviewIdFk INT NOT NULL,
   UserIdFk INT NOT NULL,
-  Score DECIMAL,
+  Score FLOAT,
   CONSTRAINT UserReviewsReviewFk
     FOREIGN KEY (ReviewIdFk)
     REFERENCES Reviews (ReviewId)
@@ -134,7 +137,7 @@ CREATE TABLE UserReviews (
 CREATE TABLE CriticReviews (
   ReviewIdFk INT NOT NULL,
   CriticName VARCHAR(255),
-  Score DECIMAL,
+  Score FLOAT,
   CONSTRAINT CriticReviewsReviewFk
     FOREIGN KEY (ReviewIdFk)
     REFERENCES Reviews (ReviewId)
@@ -145,7 +148,7 @@ CREATE TABLE rawSteamUserReviews (
   UserId INT,
   GameName TEXT,
   PurchasedOrPlayed TEXT,
-  PlayTime DECIMAL,
+  PlayTime FLOAT,
   Zero INT
 ) ENGINE = InnoDB;
 
@@ -201,7 +204,7 @@ CREATE TABLE rawMetaUserComments (
 CommentID INT,
 GameName TEXT,
 Platform VARCHAR(255),
-UserScore INT,
+UserScore FLOAT,
 MetaComment TEXT,
 UserName TEXT
 ) ENGINE = InnoDB;
@@ -330,7 +333,6 @@ LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/metacriticCritic
  SET
   TheDate = STR_TO_DATE(@TheDate, "%M %d, %Y"); 
 
-
 INSERT IGNORE INTO Games (GameName) SELECT DISTINCT Game FROM rawMetaCriticGameReviews;
   
 -- INSERT INTO rawMetaCriticGameReviewsFixed 
@@ -344,7 +346,7 @@ CREATE PROCEDURE CriticReviewInsert(
     GameIdFK INT, 
     Review TEXT,
     CriticName VARCHAR(255),
-    Score DECIMAL
+    Score FLOAT
 )
 
 BEGIN
@@ -352,7 +354,7 @@ BEGIN
     
     START TRANSACTION;
     -- Insert review data
-    INSERT INTO review(GameIdFK, Review)
+    INSERT INTO reviews(GameIdFK, Review)
     VALUES(GameIdFK, Review);
     
     -- get review_id
@@ -376,7 +378,7 @@ CREATE PROCEDURE UserReviewInsert(
     GameIdFK INT, 
     Review TEXT,
     UserID INT,
-    Score DECIMAL
+    Score FLOAT
 )
 
 BEGIN
@@ -384,7 +386,7 @@ BEGIN
     
     START TRANSACTION;
     -- Insert review data
-    INSERT INTO review(GameIdFK, Review)
+    INSERT INTO reviews(GameIdFK, Review)
     VALUES(GameIdFK, Review);
     
     -- get review_id
@@ -402,3 +404,16 @@ BEGIN
 END$$
  
 DELIMITER ;
+
+CALL CriticReviewInsert(
+	23,
+    'Review',
+    'Critic',
+    4.5
+);
+CALL UserReviewInsert(
+	23,
+    'Review',
+    45,
+    8.5
+);
