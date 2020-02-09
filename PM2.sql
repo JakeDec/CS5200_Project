@@ -2,6 +2,7 @@ CREATE SCHEMA IF NOT EXISTS GameRater;
 USE GameRater;
 
 DROP TABLE IF EXISTS GameIsGenre;
+DROP TABLE IF EXISTS GameOnPlatform;
 DROP TABLE IF EXISTS UserHasGame;
 DROP TABLE IF EXISTS UserReviews;
 DROP TABLE IF EXISTS Games;
@@ -10,10 +11,12 @@ DROP TABLE IF EXISTS Platforms;
 DROP TABLE IF EXISTS Publishers;
 DROP TABLE IF EXISTS Genres;
 
+-- These are raw data tables from our datasets
 DROP TABLE IF EXISTS rawSteamUserReviews;
 DROP TABLE IF EXISTS rawidToUsername;
 DROP TABLE IF EXISTS rawMetaCriticGame;
 DROP TABLE IF EXISTS rawVgchartzGame;
+DROP TABLE IF EXISTS rawMetaCriticGameReviews;
 
 CREATE TABLE Platforms (
   PlatformId INT NOT NULL UNIQUE AUTO_INCREMENT,
@@ -47,16 +50,10 @@ CREATE TABLE Users (
 CREATE TABLE Games (
   GameId INT NOT NULL UNIQUE AUTO_INCREMENT,
   GameName VARCHAR(255) NOT NULL UNIQUE,
-  PlatformIdFk INT,
   PublisherIdFk INT,
   ReleaseYear INT,
-  Genre VARCHAR(50),
   CONSTRAINT GamesPk
     PRIMARY KEY (GameId),
-  CONSTRAINT GamesPlatformsFk
-    FOREIGN KEY (PlatformIdFk)
-    REFERENCES Platforms (PlatformId)
-    ON UPDATE CASCADE ON DELETE SET NULL,
   CONSTRAINT GamesPublishersFk
     FOREIGN KEY (PublisherIdFk)
     REFERENCES Publishers (PublisherId)
@@ -81,8 +78,8 @@ CREATE TABLE UserHasGame (
   UserIdFk INT NOT NULL,
   GameIdFk INT NOT NULL,
   PlayTime FLOAT,
---   CONSTRAINT UserHasGamePk
---     UNIQUE (UserIdFk, GameIdFk),
+  CONSTRAINT UserHasGamePk
+    UNIQUE (UserIdFk, GameIdFk),
   CONSTRAINT UserHasGameUsersFk
     FOREIGN KEY (UserIdFk)
     REFERENCES Users (UserId)
@@ -103,6 +100,19 @@ CREATE TABLE GameIsGenre (
   CONSTRAINT GameIsGenreGenresFk
     FOREIGN KEY (GenreIdFk)
     REFERENCES Genres (GenreId)
+    ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE = InnoDB;
+
+CREATE TABLE GameOnPlatform (
+  GameIdFk INT NOT NULL,
+  PlatformIdFk INT,
+  CONSTRAINT GameOnPlatformGamesFk
+    FOREIGN KEY (GameIdFk)
+    REFERENCES Games (GameId)
+    ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT GameOnPlatformGenresFk
+    FOREIGN KEY (PlatformIdFk)
+    REFERENCES Platform (PlatformId)
     ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE = InnoDB;
 
@@ -146,18 +156,46 @@ CREATE TABLE rawVgchartzGame (
   TheYear FLOAT NULL
 ) ENGINE = InnoDB;
 
-LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/steamUserReviews.csv' INTO TABLE rawSteamUserReviews
+CREATE TABLE rawMetaCriticGameReviews (
+  TheName varchar(255),
+  Review TEXT,
+  Game varchar(255),
+  Platform varchar(255), 
+  Score FLOAT NULL, 
+  TheDate DATE
+) ENGINE = InnoDB;
+
+
+LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/Steam.csv' INTO TABLE rawSteamUserReviews
  FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
  LINES TERMINATED BY '\n';
-#INSERT INTO Users (SteamId) SELECT DISTINCT UserId FROM rawSteamUserReviews;
+ 
+ -- Load our steam games into the games table.
 INSERT INTO Games (GameName) SELECT DISTINCT GameName FROM rawSteamUserReviews;
-INSERT INTO UserHasGame (UserIdFk, GameIdFk, PlayTime) SELECT (SELECT UserId FROM Users WHERE SteamId = raw.UserId), (SELECT GameId FROM Games WHERE GameName = raw.GameName), PlayTime FROM rawSteamUserReviews raw WHERE PurchasedOrPlayed = 'played';
 
 LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/idToUsername.csv' INTO TABLE rawidToUsername
  FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
  LINES TERMINATED BY '\n'
  (UserName, UserId); 
+ 
+ -- Load our steam users from the Steam into a user table
 INSERT INTO Users (SteamId, Username) SELECT DISTINCT UserId,UserName FROM rawidToUsername;
+
+-- Map users to games played
+INSERT IGNORE INTO userhasgame (Select users.UserId, games.GameId, blah.PlayTime
+FROM users
+INNER JOIN (select * from rawsteamuserreviews where PurchasedOrPlayed='play')as blah
+  ON users.SteamId = blah.UserId
+INNER JOIN games
+  ON games.GameName = blah.GameName);
+
+-- If the user has purchased a game, but has not played it, insert as gametime 0
+INSERT IGNORE INTO userhasgame (Select users.UserId, games.GameId, 0
+FROM users
+INNER JOIN (select * from rawsteamuserreviews where PurchasedOrPlayed='purchase')as blah
+  ON users.SteamId = blah.UserId
+INNER JOIN games
+  ON games.GameName = blah.GameName);
 
 LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/metacriticGameInfo.csv' INTO TABLE rawMetaCriticGame
  FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
@@ -168,11 +206,20 @@ LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/metacriticGameIn
    AvgUserscore = if(@score in ('tbd', 'not specified'), NULL, @score),
    TheYear = if(@TheYear in ('tbd', 'not specified'), NULL, @TheYear),
    MetaScore = if(@Metascore in ('tbd', 'not specified'), NULL, @Metascore);
-   
 
+-- Insert publisher and Platfor information for games   
 INSERT IGNORE INTO Publishers (PublisherName) SELECT DISTINCT Publisher FROM rawMetaCriticGame;
 INSERT IGNORE INTO Platforms (PlatformName) SELECT DISTINCT Platform FROM rawMetaCriticGame;
-   
+
+-- Update and insert games that do not have steam reviews into games table.
+INSERT INTO games (GameName, PublisherIdFk, ReleaseYear)
+SELECT rawmetacriticgame.Title, publishers.PublisherId, rawmetacriticgame.TheYear
+FROM rawmetacriticgame
+INNER JOIN publishers
+  ON publishers.PublisherName = rawmetacriticgame.Publisher
+ON DUPLICATE KEY UPDATE
+PublisherIdFk = publishers.PublisherId,
+ReleaseYear = rawmetacriticgame.TheYear;
    
 LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/vgchartz12042019.csv' INTO TABLE rawVgchartzGame
  FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
@@ -185,14 +232,42 @@ LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/vgchartz12042019
 	User_Score = nullif(@User_Score,''),
 	Total_Shipped = nullif(@Total_Shipped,''),
 	TheYear = nullif(@TheYear,''); 
-    
+
+-- Add a more exastive list of games, including older console games to the platforms and publishers tables    
 INSERT IGNORE INTO Publishers (PublisherName) SELECT DISTINCT Publisher FROM rawVgchartzGame;
 INSERT IGNORE INTO Platforms (PlatformName) SELECT DISTINCT Platform FROM rawVgchartzGame;
 INSERT IGNORE INTO Genres (Genre) SELECT DISTINCT Genre FROM rawVgchartzGame;
 
+-- Fill in the platform information for games (games can be on multiple platforms
+INSERT INTO GameOnPlatform SELECT games.GameId, platforms.PlatformId 
+FROM games
+  INNER JOIN rawvgchartzgame
+    ON games.GameName = rawvgchartzgame.TheName
+  INNER JOIN platforms
+    ON rawvgchartzgame.Platform = platforms.PlatformName;
+
+-- Update our games table with new entries
+INSERT INTO games (GameName, PublisherIdFk, ReleaseYear)
+SELECT rawvgchartzgame.TheName, publishers.PublisherId, rawvgchartzgame.TheYear
+FROM rawvgchartzgame
+INNER JOIN publishers
+  ON publishers.PublisherName = rawvgchartzgame.Publisher
+ON DUPLICATE KEY UPDATE
+PublisherIdFk = publishers.PublisherId,
+ReleaseYear = rawvgchartzgame.TheYear;
+
+-- Map games to genres (games can have more than one genre
 INSERT IGNORE INTO gameisgenre (GameIdFk, GenreIdFk)  (SELECT games.GameId, genres.GenreId
 FROM games
 INNER JOIN rawvgchartzgame 
   ON games.GameName = rawvgchartzgame.TheName
 INNER JOIN genres 
-  ON rawvgchartzgame.Genre = genres.Genre)
+  ON rawvgchartzgame.Genre = genres.Genre);
+  
+LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/metacriticCriticReviews.csv' IGNORE INTO TABLE rawMetaCriticGameReviews
+ FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
+ LINES TERMINATED BY '\n'
+ IGNORE 1 LINES
+ (TheName,Review,Game,Platform,Score,@TheDate) 
+ SET
+	TheDate = STR_TO_DATE(@TheDate, "%b %e, %Y");
