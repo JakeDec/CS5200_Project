@@ -78,13 +78,10 @@ BEGIN
     
     -- get review_id
     SET review_id= LAST_INSERT_ID();
-    
 
     INSERT INTO criticreviews(ReviewIdFk, CriticName, Score)
         VALUES(review_id, NEW.CriticName, NEW.Score);
-
 END$$
- 
 DELIMITER ;
 
 
@@ -120,7 +117,6 @@ BEGIN
     INSERT INTO userreviews(ReviewIdFk, UserIdFk, Score)
         VALUES(review_id,NEW.UserId,NEW.UserScore);
 END$$
- 
 DELIMITER ;
 
 LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/Steam.csv' IGNORE INTO TABLE rawSteamUserReviews
@@ -130,6 +126,7 @@ LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/Steam.csv' IGNOR
  -- Load our steam games into the games table.
 INSERT INTO Games (GameName) SELECT DISTINCT GameName FROM rawSteamUserReviews;
 
+-- Load SteamID to UserName mapping pulled from API
 LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/idToUsername.csv' INTO TABLE rawidToUsername
  FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
  LINES TERMINATED BY '\n'
@@ -154,6 +151,7 @@ INNER JOIN (SELECT * FROM rawsteamuserreviews WHERE PurchasedOrPlayed='purchase'
 INNER JOIN games
   ON games.GameName = purchasedGame.GameName);
 
+
 LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/metacriticGameInfo.csv' INTO TABLE rawMetaCriticGame
  FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
  LINES TERMINATED BY '\n'
@@ -164,7 +162,7 @@ LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/metacriticGameIn
    TheYear = if(@TheYear in ('tbd', 'not specified'), NULL, @TheYear),
    MetaScore = if(@Metascore in ('tbd', 'not specified'), NULL, @Metascore);
 
--- Insert publisher and Platfor information for games   
+-- Insert publisher and Platform information for games   
 INSERT IGNORE INTO Publishers (PublisherName) SELECT DISTINCT Publisher FROM rawMetaCriticGame;
 INSERT IGNORE INTO Platforms (PlatformName) SELECT DISTINCT Platform FROM rawMetaCriticGame;
 INSERT IGNORE INTO Genres (Genre) SELECT DISTINCT Genre FROM rawMetaCriticGame;
