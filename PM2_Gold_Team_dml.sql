@@ -1,19 +1,5 @@
-CREATE SCHEMA IF NOT EXISTS GameRater;
 USE GameRater;
 
-DROP TABLE IF EXISTS GameIsGenre;
-DROP TABLE IF EXISTS GameOnPlatform;
-DROP TABLE IF EXISTS UserHasGame;
-DROP TABLE IF EXISTS CriticReviews;
-DROP TABLE IF EXISTS UserReviews;
-DROP TABLE IF EXISTS Reviews;
-DROP TABLE IF EXISTS Games;
-DROP TABLE IF EXISTS Users;
-DROP TABLE IF EXISTS Platforms;
-DROP TABLE IF EXISTS Publishers;
-DROP TABLE IF EXISTS Genres;
-
--- These are raw data tables from our datasets
 DROP TABLE IF EXISTS rawSteamUserReviews;
 DROP TABLE IF EXISTS rawidToUsername;
 DROP TABLE IF EXISTS rawMetaCriticGame;
@@ -22,125 +8,6 @@ DROP TABLE IF EXISTS rawMetaUserComments;
 DROP TABLE IF EXISTS rawMetaUserCommentsFixed;
 DROP TABLE IF EXISTS rawMetaCriticGameReviews;
 DROP TABLE IF EXISTS rawMetaCriticGameReviewsFixed;
-
-CREATE TABLE Platforms (
-  PlatformId INT NOT NULL UNIQUE AUTO_INCREMENT,
-  PlatformName VARCHAR(50) NOT NULL UNIQUE,
-  CONSTRAINT PlatformPk
-    PRIMARY KEY (PlatformId)
-) ENGINE = InnoDB;
-
-CREATE TABLE Publishers (
-  PublisherId INT NOT NULL UNIQUE AUTO_INCREMENT,
-  PublisherName VARCHAR(255) NOT NULL UNIQUE,
-  CONSTRAINT PublisherPk
-    PRIMARY KEY (PublisherId)
-) ENGINE = InnoDB;
-
-CREATE TABLE Genres (
-  GenreId INT NOT NULL UNIQUE AUTO_INCREMENT,
-  Genre VARCHAR(255) UNIQUE,
-  CONSTRAINT GenresPk
-    PRIMARY KEY (GenreId)
-) ENGINE = InnoDB;
-
-CREATE TABLE Users (
-  UserId INT NOT NULL UNIQUE AUTO_INCREMENT,
-  SteamId INT NULL UNIQUE,
-  UserName TEXT DEFAULT NULL,
-  CONSTRAINT UserPk
-    PRIMARY KEY (UserId)
-) ENGINE = InnoDB;
-
-CREATE TABLE Games (
-  GameId INT NOT NULL UNIQUE AUTO_INCREMENT,
-  GameName VARCHAR(255) NOT NULL UNIQUE,
-  PublisherIdFk INT,
-  ReleaseYear INT,
-  CONSTRAINT GamesPk
-    PRIMARY KEY (GameId),
-  CONSTRAINT GamesPublishersFk
-    FOREIGN KEY (PublisherIdFk)
-    REFERENCES Publishers (PublisherId)
-    ON UPDATE CASCADE ON DELETE SET NULL
-) ENGINE = InnoDB;
-
-CREATE TABLE UserHasGame (
-  UserIdFk INT NOT NULL,
-  GameIdFk INT NOT NULL,
-  PlayTime FLOAT,
-  CONSTRAINT UserHasGamePk
-    UNIQUE (UserIdFk, GameIdFk),
-  CONSTRAINT UserHasGameUsersFk
-    FOREIGN KEY (UserIdFk)
-    REFERENCES Users (UserId)
-    ON UPDATE CASCADE ON DELETE CASCADE,
-  CONSTRAINT UserHasGameGamesFk
-    FOREIGN KEY (GameIdFk)
-    REFERENCES Games (GameId)
-    ON UPDATE CASCADE ON DELETE CASCADE
-) ENGINE = InnoDB;
-
-CREATE TABLE GameIsGenre (
-  GameIdFk INT NOT NULL,
-  GenreIdFk INT NOT NULL,
-  CONSTRAINT GameIsGenreGamesFk
-    FOREIGN KEY (GameIdFk)
-    REFERENCES Games (GameId)
-    ON UPDATE CASCADE ON DELETE CASCADE,
-  CONSTRAINT GameIsGenreGenresFk
-    FOREIGN KEY (GenreIdFk)
-    REFERENCES Genres (GenreId)
-    ON UPDATE CASCADE ON DELETE CASCADE
-) ENGINE = InnoDB;
-
-CREATE TABLE GameOnPlatform (
-  GameIdFk INT NOT NULL,
-  PlatformIdFk INT NOT NULL,
-  CONSTRAINT GameOnPlatformGamesFk
-    FOREIGN KEY (GameIdFk)
-    REFERENCES Games (GameId)
-    ON UPDATE CASCADE ON DELETE CASCADE,
-  CONSTRAINT GameOnPlatformGenresFk
-    FOREIGN KEY (PlatformIdFk)
-    REFERENCES Platforms (PlatformId)
-    ON UPDATE CASCADE ON DELETE CASCADE
-) ENGINE = InnoDB;
-
-CREATE TABLE Reviews (
-  ReviewId INT NOT NULL UNIQUE AUTO_INCREMENT,
-  GameIdFK INT NOT NULL,
-  Review TEXT,
-  CONSTRAINT ReviewsGamesFK
-    FOREIGN KEY (GameIdFk)
-    REFERENCES Games (GameId)
-    ON UPDATE CASCADE ON DELETE CASCADE
-) ENGINE = InnoDB;
-
-
-CREATE TABLE UserReviews (
-  ReviewIdFk INT NOT NULL,
-  UserIdFk INT NOT NULL,
-  Score FLOAT,
-  CONSTRAINT UserReviewsReviewFk
-    FOREIGN KEY (ReviewIdFk)
-    REFERENCES Reviews (ReviewId)
-    ON UPDATE CASCADE ON DELETE CASCADE,
-  CONSTRAINT UserReviewsUsersFk
-    FOREIGN KEY (UserIdFk)
-    REFERENCES Users (UserId)
-    ON UPDATE CASCADE ON DELETE CASCADE
-) ENGINE = InnoDB;
-
-CREATE TABLE CriticReviews (
-  ReviewIdFk INT NOT NULL,
-  CriticName VARCHAR(255),
-  Score FLOAT,
-  CONSTRAINT CriticReviewsReviewFk
-    FOREIGN KEY (ReviewIdFk)
-    REFERENCES Reviews (ReviewId)
-    ON UPDATE CASCADE ON DELETE CASCADE
-) ENGINE = InnoDB;
 
 CREATE TABLE rawSteamUserReviews (
   UserId INT,
@@ -272,20 +139,20 @@ LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/idToUsername.csv
 INSERT INTO Users (SteamId, Username) SELECT DISTINCT UserId,UserName FROM rawidToUsername;
 
 -- Map users to games played
-INSERT IGNORE INTO userhasgame (Select users.UserId, games.GameId, blah.PlayTime
+INSERT IGNORE INTO userhasgame (SELECT users.UserId, games.GameId, playedGame.PlayTime
 FROM users
-INNER JOIN (select * from rawsteamuserreviews where PurchasedOrPlayed='play')as blah
-  ON users.SteamId = blah.UserId
+INNER JOIN (SELECT * FROM rawsteamuserreviews WHERE PurchasedOrPlayed='play') AS playedGame
+  ON users.SteamId = playedGame.UserId
 INNER JOIN games
-  ON games.GameName = blah.GameName);
+  ON games.GameName = playedGame.GameName);
 
 -- If the user has purchased a game, but has not played it, insert as gametime 0
 INSERT IGNORE INTO userhasgame (Select users.UserId, games.GameId, 0
 FROM users
-INNER JOIN (select * from rawsteamuserreviews where PurchasedOrPlayed='purchase')as blah
-  ON users.SteamId = blah.UserId
+INNER JOIN (SELECT * FROM rawsteamuserreviews WHERE PurchasedOrPlayed='purchase') as purchasedGame
+  ON users.SteamId = purchasedGame.UserId
 INNER JOIN games
-  ON games.GameName = blah.GameName);
+  ON games.GameName = purchasedGame.GameName);
 
 LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/metacriticGameInfo.csv' INTO TABLE rawMetaCriticGame
  FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
@@ -369,7 +236,7 @@ LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/metacriticUserCo
  LINES TERMINATED BY '\n'
  IGNORE 1 LINES;
  
-INSERT IGNORE INTO Users (UserName) SELECT DISTINCT UserName FROM rawMetaUserComments;
+INSERT IGNORE INTO Users (UserName) SELECT UserName FROM rawMetaUserComments;
 
 INSERT INTO rawMetaUserCommentsFixed (GameId,UserScore,Review,UserId)
   SELECT games.GameId, rawMetaUserComments.UserScore, rawMetaUserComments.MetaComment, users.UserId
@@ -394,3 +261,12 @@ INSERT INTO rawMetaCriticGameReviewsFixed (CriticName,Review,Game,Score)
   FROM rawMetaCriticGameReviews
 INNER JOIN games
   ON games.GameName = rawMetaCriticGameReviews.Game;
+  
+DROP TABLE IF EXISTS rawSteamUserReviews;
+DROP TABLE IF EXISTS rawidToUsername;
+DROP TABLE IF EXISTS rawMetaCriticGame;
+DROP TABLE IF EXISTS rawVgchartzGame;
+DROP TABLE IF EXISTS rawMetaUserComments;
+DROP TABLE IF EXISTS rawMetaUserCommentsFixed;
+DROP TABLE IF EXISTS rawMetaCriticGameReviews;
+DROP TABLE IF EXISTS rawMetaCriticGameReviewsFixed;
