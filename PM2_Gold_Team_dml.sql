@@ -171,7 +171,6 @@ LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/metacriticGameIn
 -- Insert publisher and Platform information for games   
 INSERT IGNORE INTO Publishers (PublisherName) SELECT DISTINCT Publisher FROM rawMetaCriticGame;
 INSERT IGNORE INTO Platforms (PlatformName) SELECT DISTINCT Platform FROM rawMetaCriticGame;
-INSERT IGNORE INTO Genres (Genre) SELECT DISTINCT Genre FROM rawMetaCriticGame;
 
 -- Update and insert games that do not have steam reviews into games table.
 INSERT INTO games (GameName, PublisherIdFk, ReleaseYear)
