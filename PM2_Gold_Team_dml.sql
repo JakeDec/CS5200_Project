@@ -3,6 +3,7 @@ USE GameRater;
 DROP TABLE IF EXISTS rawSteamUserReviews;
 DROP TABLE IF EXISTS rawidToUsername;
 DROP TABLE IF EXISTS rawMetaCriticGame;
+DROP TABLE IF EXISTS rawMetaCriticGameGenre;
 DROP TABLE IF EXISTS rawVgchartzGame;
 DROP TABLE IF EXISTS rawMetaUserComments;
 DROP TABLE IF EXISTS rawMetaUserCommentsFixed;
@@ -31,6 +32,11 @@ CREATE TABLE rawMetaCriticGame (
   Metascore INT NULL,
   AvgUserscore FLOAT NULL,
   Players varchar(255)
+) ENGINE = InnoDB;
+
+CREATE TABLE rawMetaCriticGameGenre (
+  Title varchar(255),
+  Genre varchar(255)
 ) ENGINE = InnoDB;
 
 CREATE TABLE rawVgchartzGame (
@@ -177,13 +183,19 @@ ON DUPLICATE KEY UPDATE
 PublisherIdFk = publishers.PublisherId,
 ReleaseYear = rawmetacriticgame.TheYear;
 
+LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/mcGameInfoGenre.csv' INTO TABLE rawMetaCriticGameGenre
+ FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
+ LINES TERMINATED BY '\n'
+ IGNORE 1 LINES ; 
+
+INSERT IGNORE INTO Genres (Genre) SELECT DISTINCT Genre FROM rawMetaCriticGameGenre;
 -- Map games to genres (games can have more than one genre)
 INSERT IGNORE INTO gameisgenre (GameIdFk, GenreIdFk)  (SELECT games.GameId, genres.GenreId
 FROM games
-INNER JOIN rawmetacriticgame 
-  ON games.GameName = rawmetacriticgame.Title
+INNER JOIN rawmetacriticgamegenre 
+  ON games.GameName = rawmetacriticgamegenre.Title
 INNER JOIN genres 
-  ON rawmetacriticgame.Genre = genres.Genre);
+  ON rawmetacriticgamegenre.Genre = genres.Genre);
    
 LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/vgchartz12042019.csv' INTO TABLE rawVgchartzGame
  FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
