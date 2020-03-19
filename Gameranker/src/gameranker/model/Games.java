@@ -1,36 +1,32 @@
 package gameranker.model;
 
-import java.util.List;
-
 public class Games {
 	protected int gameId;
 	protected String gameName;
 	protected Publishers publisher;
 	protected int releaseYear;
-	protected List<Platforms> platforms;
-	protected List<Genres> genres;
-	
-//	CREATE TABLE Games (
-//			  GameId INT NOT NULL UNIQUE AUTO_INCREMENT,
-//			  GameName VARCHAR(255) NOT NULL UNIQUE,
-//			  PublisherIdFk INT,
-//			  ReleaseYear INT,
-//			  CONSTRAINT GamesPk
-//			    PRIMARY KEY (GameId),
-//			  CONSTRAINT GamesPublishersFk
-//			    FOREIGN KEY (PublisherIdFk)
-//			    REFERENCES Publishers (PublisherId)
-//			    ON UPDATE CASCADE ON DELETE SET NULL
-//			) ENGINE = InnoDB;
-	
+
+	//	CREATE TABLE Games (
+	//		GameId INT NOT NULL UNIQUE AUTO_INCREMENT,
+	//		GameName VARCHAR(255) NOT NULL UNIQUE,
+	// 		PublisherIdFk INT,
+	//		ReleaseYear INT,
+	//		CONSTRAINT GamesPk
+	//			PRIMARY KEY (GameId),
+	//		CONSTRAINT GamesPublishersFk
+	//			FOREIGN KEY (PublisherIdFk)
+	//			REFERENCES Publishers (PublisherId)
+	//			ON UPDATE CASCADE ON DELETE SET NULL
+	//	) ENGINE = InnoDB;
+
 	/**
-	 * Private method for building a game object.
+	 * Construct a game object.
 	 * @param gameId
 	 * @param gameName
 	 * @param publisher
 	 * @param releaseYear
 	 */
-	private void setUpGames(int gameId, String gameName, Publishers publisher, int releaseYear) {
+	public Games(int gameId, String gameName, Publishers publisher, int releaseYear) {
 		this.gameId = gameId;
 		this.gameName = gameName;
 		this.publisher = publisher;
@@ -38,30 +34,15 @@ public class Games {
 	}
 	
 	/**
-	 * Construct a game object when the platforms and genres are not known.
-	 * To assign a list of platforms or genres later, use the respective set functions.
-	 * @param gameId
+	 * Construct a game object.
 	 * @param gameName
 	 * @param publisher
 	 * @param releaseYear
 	 */
-	public Games(int gameId, String gameName, Publishers publisher, int releaseYear) {
-		setUpGames(gameId,gameName,publisher,releaseYear); //call private method.
-	}
-	
-	/**
-	 * Construct a game object when the platforms and genres are known.
-	 * @param gameId
-	 * @param gameName
-	 * @param publisher
-	 * @param releaseYear
-	 * @param platforms
-	 * @param genres
-	 */
-	public Games(int gameId, String gameName, Publishers publisher, int releaseYear, List<Platforms> platforms, List<Genres> genres) {
-		setUpGames(gameId,gameName,publisher,releaseYear); //call private method.
-		this.platforms = platforms;
-		this.genres = genres;
+	public Games(String gameName, Publishers publisher, int releaseYear) {
+		this.gameName = gameName;
+		this.publisher = publisher;
+		this.releaseYear = releaseYear;
 	}
 	
 	/**
@@ -127,37 +108,4 @@ public class Games {
 	public void setReleaseYear(int releaseYear) {
 		this.releaseYear = releaseYear;
 	}
-	
-	/**
-	 * Collect a list of all platforms that are supported for this Game Object.
-	 * @return list of platforms.
-	 */
-	public List<Platforms> getPlatforms() {
-		return this.platforms;
-	}
-	
-	/**
-	 * Change the platforms list assigned to the Game Object.
-	 * @param platforms
-	 */
-	public void setPlatforms(List<Platforms> platforms) {
-		this.platforms = platforms;
-	}
-	
-	/**
-	 * Collect a list of all of the genres that are supported for this Game Object.
-	 * @return list of genres.
-	 */
-	public List<Genres> getGenres() {
-		return this.genres;
-	}
-	
-	/**
-	 * Change the genres list assigned to the Game Object.
-	 * @param genres
-	 */
-	public void setGenres(List<Genres> genres) {
-		this.genres = genres;
-	}
-
 }

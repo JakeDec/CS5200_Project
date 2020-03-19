@@ -3,22 +3,30 @@ package gameranker.model;
 public class Publishers {
 	protected int publisherId;
 	protected String publisherName;
-	
-//	CREATE TABLE Publishers (
-//			  PublisherId INT NOT NULL UNIQUE AUTO_INCREMENT,
-//			  PublisherName VARCHAR(255) NOT NULL UNIQUE,
-//			  CONSTRAINT PublisherPk
-//			    PRIMARY KEY (PublisherId)
-//			) ENGINE = InnoDB;
+
+	//	CREATE TABLE Publishers (
+	//		PublisherId INT NOT NULL UNIQUE AUTO_INCREMENT,
+	//		PublisherName VARCHAR(255) NOT NULL UNIQUE,
+	//		CONSTRAINT PublisherPk
+	//			PRIMARY KEY (PublisherId)
+	//	) ENGINE = InnoDB;
 	
 	/**
 	 * Construct a Publishers Object.
 	 * @param publisherId
 	 * @param publisherName
 	 */
-	
 	public Publishers(int publisherId, String publisherName) {
 		this.publisherId = publisherId;
+		this.publisherName = publisherName;
+	}
+	
+	/**
+	 * Construct a Publishers Object.
+	 * @param publisherId
+	 * @param publisherName
+	 */
+	public Publishers(String publisherName) {
 		this.publisherName = publisherName;
 	}
 	
@@ -53,5 +61,4 @@ public class Publishers {
 	public void setPublisherName(String publisherName) {
 		this.publisherName = publisherName;
 	}
-
 }

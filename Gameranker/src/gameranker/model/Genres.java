@@ -3,15 +3,14 @@ package gameranker.model;
 public class Genres {
 	protected int genreId;
 	protected String genre;
-	
 
-//CREATE TABLE Genres (
-//  GenreId INT NOT NULL UNIQUE AUTO_INCREMENT,
-//  Genre VARCHAR(255) UNIQUE,
-//  CONSTRAINT GenresPk
-//    PRIMARY KEY (GenreId)
-//) ENGINE = InnoDB;
-	
+	//	CREATE TABLE Genres (
+	//  	GenreId INT NOT NULL UNIQUE AUTO_INCREMENT,
+	//  	Genre VARCHAR(255) UNIQUE,
+	//  	CONSTRAINT GenresPk
+	//  		PRIMARY KEY (GenreId)
+	//	) ENGINE = InnoDB;
+
 	/**
 	 * Construct a Genres Object.
 	 * @param genreId
@@ -21,7 +20,15 @@ public class Genres {
 		this.genreId = genreId;
 		this.genre = genre;
 	}
-	
+
+	/**
+	 * Construct a Genres Object.
+	 * @param genre
+	 */
+	public Genres(String genre) {
+		this.genre = genre;
+	}
+
 	/**
 	 * Get the genre id of the Genre Object.
 	 * @return the genre id.
@@ -29,7 +36,7 @@ public class Genres {
 	public int getGenreId() {
 		return this.genreId;
 	}
-	
+
 	/**
 	 * Change the genre id of the Genre Object.
 	 * @param genreId
@@ -37,7 +44,7 @@ public class Genres {
 	public void setGenreId(int genreId) {
 		this.genreId = genreId;
 	}
-	
+
 	/**
 	 * Get the genre of the Genre Object.
 	 * @return the genre
@@ -45,7 +52,7 @@ public class Genres {
 	public String getGenre() {
 		return this.genre;
 	}
-	
+
 	/**
 	 * Update the genre of the Genre Object.
 	 * @param genre
