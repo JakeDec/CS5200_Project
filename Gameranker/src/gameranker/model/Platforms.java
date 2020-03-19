@@ -1,20 +1,54 @@
 package gameranker.model;
 
 public class Platforms {
-	private int platformId;
-	private String platformName;
+	protected int platformId;
+	protected String platformName;
 	
+//	CREATE TABLE Platforms (
+//			  PlatformId INT NOT NULL UNIQUE AUTO_INCREMENT,
+//			  PlatformName VARCHAR(50) NOT NULL UNIQUE,
+//			  CONSTRAINT PlatformPk
+//			    PRIMARY KEY (PlatformId)
+//			) ENGINE = InnoDB;
 	
-	public int getPlatformId() {
-		return platformId;
+	/**
+	 * Construct a Platforms Object.
+	 * @param platformId
+	 * @param platformName
+	 */
+	public Platforms(int platformId, String platformName) {
+		this.platformId = platformId;
+		this.platformName = platformName;
 	}
+	
+	/**
+	 * Get the platform id of the Platforms Object.
+	 * @return the platform id.
+	 */
+	public int getPlatformId() {
+		return this.platformId;
+	}
+	
+	/**
+	 * Change the platform id assigned to the Platforms Object.
+	 * @param platformId
+	 */
 	public void setPlatformId(int platformId) {
 		this.platformId = platformId;
 	}
 	
+	/**
+	 * Get the platform name assigned to the Platforms Object.
+	 * @return the platform name.
+	 */
 	public String getPlatformName() {
-		return platformName;
+		return this.platformName;
 	}
+	
+	/**
+	 * Change the platform name assigned to the Platforms Object.
+	 * @param platformName
+	 */
 	public void setPlatformName(String platformName) {
 		this.platformName = platformName;
 	}
