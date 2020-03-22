@@ -55,7 +55,7 @@ public class GameCreate extends HttpServlet {
         } else {
         	// Create the Game.
         	String publisher = req.getParameter("publisher");
-        	int year = req.getParameter("releaseYear");
+        	int year = Integer.valueOf(req.getParameter("releaseYear"));
 	        try {
 	        	// Exercise: parse the input for StatusLevel.
 	        	Publishers pub = new Publishers(publisher);
