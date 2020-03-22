@@ -12,7 +12,7 @@
 </head>
 <body>
 	<h1>Create Publisher</h1>
-	<form action="publisherscreate" method="post">
+	<form action="publishercreate" method="post">
 		<p>
 			<label for="publisherName">PublisherName</label>
 			<input id="publisherName" name="publisherName" value="">
