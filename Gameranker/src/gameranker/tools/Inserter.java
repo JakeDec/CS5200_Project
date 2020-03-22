@@ -20,7 +20,9 @@ public class Inserter {
 	public static void main(String[] args) throws SQLException {
 		
 		// USER DAO
+		
 		UsersDao usersDao = UsersDao.getInstance();
+		
 		Users u1 = new Users("Jake");
 		System.out.println("Adding user Jake");
 		u1 = usersDao.create(u1);
@@ -37,7 +39,7 @@ public class Inserter {
 		System.out.println(u1);
 
 		System.out.println("Checking to see if getting user by id works");
-		Users u2 = usersDao.getUserById(1);
+		Users u2 = usersDao.getUserByUserId(1);
 		System.out.println(u2);
 		
 		System.out.println("\n");
@@ -61,8 +63,8 @@ public class Inserter {
 		
 		System.out.println("\n");
 		
-		
 		// GAMES DAO	
+		
 		GamesDao gamesDao = GamesDao.getInstance();
 		System.out.println("Creating new game.");
 		Games g1 = new Games("Gold Team Rules", p2, 2019);
@@ -103,7 +105,6 @@ public class Inserter {
 		List<UserReviews> ur3 = userReviewsDao.getReviewsByUser(u1);
 		System.out.println(ur3);
 
-		
 		System.out.println("\n");
 		
 		System.out.println("Creating a Critic Review");
@@ -118,9 +119,21 @@ public class Inserter {
 		List<CriticReviews> cr3 = criticReviewsDao.getReviewsByCriticName("Critic");
 		System.out.println(cr3);
 		
+		// USERHASGAME DAO
 		
+		UserHasGameDao userHasGameDao = UserHasGameDao.getInstance();
+		UserHasGame userHasGame = new UserHasGame(u1, g1, 99.99f);
+		System.out.println("Creating a User Has Game entry");
+		userHasGameDao.create(userHasGame);
+		System.out.println(userHasGameDao);
 		
-		System.out.println("\n");
+		System.out.println("Getting games owned by the new user:");
+		
+		List<UserHasGame> userHasGames = userHasGameDao.getUserHasGamesByUserId(u1.getUserId());
+		
+		for (UserHasGame uhg : userHasGames) {
+			System.out.println(uhg);
+		}
 		
 		// GENRE DAO
 		GenresDao genresDao = GenresDao.getInstance();
@@ -191,19 +204,6 @@ public class Inserter {
 		publishersDao.delete(p1);
 		usersDao.delete(u1);
 		
-
-//		
-
-//		
-
-//		
-//		//
-//		gameOnPlatformDao.delete(gameOnPlatform);
-//		platformsDao.delete(platform);
-//		gameIsGenreDao.delete(gameIsGenre);
-//		genresDao.delete(genre);
-//		gamesDao.delete(game);
-//		publishersDao.delete(publisher);
 		
 		
 //		

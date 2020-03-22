@@ -87,7 +87,7 @@ public class UserReviewsDao extends ReviewsDao{
 			if(results.next()) {
 				return new UserReviews(
 				super.getReviewById(results.getInt("ReviewIdFk")),
-				UsersDao.getInstance().getUserById(results.getInt("UserIdFk")),
+				UsersDao.getInstance().getUserByUserId(results.getInt("UserIdFk")),
 				results.getFloat("Score"));
 			}
 		} catch (SQLException e) {

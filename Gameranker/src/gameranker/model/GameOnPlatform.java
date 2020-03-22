@@ -62,6 +62,4 @@ public class GameOnPlatform {
 	public String toString() {
 		return String.format("(%s), (%s)", game, platform);
 	}
-	
-	
 }
