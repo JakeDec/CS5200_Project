@@ -187,6 +187,7 @@ public class Inserter {
 		
 
 
+		// Remove our new Dummy Data
 		userHasGameDao.delete(userHasGame);
 		gameOnPlatformDao.delete(gop1);
 		platformsDao.delete(plat1);
@@ -197,19 +198,6 @@ public class Inserter {
 		gamesDao.delete(g1);
 		publishersDao.delete(p1);
 		usersDao.delete(u1);
-		
-		
-		
-//		
-//		
-//		
-//		// DAO instances.
-//		UserHasGameDao userHasGameDao = UserHasGameDao.getInstance();
-//		UsersDao usersDao = UsersDao.getInstance();
-//		
-//		ReviewsDao reviewsDao = ReviewsDao.getInstance();
-//		CriticReviewsDao criticReviewsDao = CriticReviewsDao.getInstance();
-//		UserReviewsDao userReviewsDao = UserReviewsDao.getInstance();
 		
 	}
 }
