@@ -40,7 +40,7 @@ public class Inserter {
 		Users u2 = usersDao.getUserById(1);
 		System.out.println(u2);
 		
-		usersDao.delete(u1);
+		System.out.println("\n");
 		
 		// PUBLISHER DAO
 		
@@ -59,14 +59,39 @@ public class Inserter {
 		Publishers p2 = publishersDao.getPublisherById(1);
 		System.out.println(p2);
 		
+		System.out.println("\n");
+		
+		
+		// GAMES DAO	
+		GamesDao gamesDao = GamesDao.getInstance();
+		System.out.println("Creating new game.");
+		Games g1 = new Games("Gold Team Rules", p2, 2019);
+		g1 = gamesDao.create(g1);
+		System.out.println(g1);
+		
+		System.out.println("Updating publisher to Gold Team");
+		g1 = gamesDao.setPublisher(g1, p1);
+		System.out.println(g1);
+		
+		System.out.println("Updating publish year to 2020");
+		g1 = gamesDao.setReleaseYear(g1, 2020);
+		System.out.println(g1);
+
+		System.out.println("Getting Game 2 by ID");
+		Games g2 = gamesDao.getGameById(2);
+		System.out.println(g2);
+		
+		
+		
+		gamesDao.delete(g1);
 		publishersDao.delete(p1);
+		usersDao.delete(u1);
 		
 		
 		
-//		
-//		GamesDao gamesDao = GamesDao.getInstance();
-//		Games game = new Games("Gold Team Rules", publisher, 2020);
-//		gamesDao.create(game);
+		
+		
+		
 //		
 //		GenresDao genresDao = GenresDao.getInstance();
 //		Genres genre = new Genres("Project");

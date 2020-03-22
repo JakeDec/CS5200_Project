@@ -108,4 +108,8 @@ public class Games {
 	public void setReleaseYear(int releaseYear) {
 		this.releaseYear = releaseYear;
 	}
+	
+	public String toString() {
+		return String.format("%d: %s (%s) %d", gameId, gameName, publisher.toString(), releaseYear);
+	}
 }

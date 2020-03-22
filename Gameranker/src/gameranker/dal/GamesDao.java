@@ -2,6 +2,7 @@ package gameranker.dal;
 
 import gameranker.model.Games;
 import gameranker.model.Publishers;
+import gameranker.model.Users;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -132,4 +133,59 @@ public class GamesDao {
 			}
 		}
 	}
+	
+	public Games setPublisher(Games game, Publishers publisher) throws SQLException {
+		String updateBlogPost = "UPDATE Games SET PublisherIdFk=? WHERE GameId=?;";
+		Connection connection = null;
+		PreparedStatement updateStmt = null;
+		try {
+			connection = connectionManager.getConnection();
+			updateStmt = connection.prepareStatement(updateBlogPost);
+			updateStmt.setInt(1, publisher.getPublisherId());
+			updateStmt.setInt(2, game.getGameId());
+			updateStmt.executeUpdate();
+
+			// Update the blogPost param before returning to the caller.
+			game.setPublisher(publisher);
+			return game;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if(connection != null) {
+				connection.close();
+			}
+			if(updateStmt != null) {
+				updateStmt.close();
+			}
+		}
+	}	
+	
+	
+	public Games setReleaseYear(Games game, int releaseYear) throws SQLException {
+		String updateBlogPost = "UPDATE Games SET ReleaseYear=? WHERE GameId=?;";
+		Connection connection = null;
+		PreparedStatement updateStmt = null;
+		try {
+			connection = connectionManager.getConnection();
+			updateStmt = connection.prepareStatement(updateBlogPost);
+			updateStmt.setInt(1, releaseYear);
+			updateStmt.setInt(2, game.getGameId());
+			updateStmt.executeUpdate();
+
+			// Update the blogPost param before returning to the caller.
+			game.setReleaseYear(releaseYear);
+			return game;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if(connection != null) {
+				connection.close();
+			}
+			if(updateStmt != null) {
+				updateStmt.close();
+			}
+		}
+	}	
 }
