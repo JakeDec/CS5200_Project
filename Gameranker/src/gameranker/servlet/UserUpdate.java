@@ -37,7 +37,7 @@ protected UsersDao usersDao;
             messages.put("success", "Please enter a valid UserId.");
         } else {
         	try {
-        		Users user = usersDao.getUserById(userId);
+        		Users user = usersDao.getUserByUserId(userId);
         		if(user == null) {
         			messages.put("success", "User does not exist.");
         		}
@@ -64,7 +64,7 @@ protected UsersDao usersDao;
             messages.put("success", "Please enter a valid UserId.");
         } else {
         	try {
-        		Users user = usersDao.getUserById(userId) ;
+        		Users user = usersDao.getUserByUserId(userId) ;
         		if(user == null) {
         			messages.put("success", "User does not exist. No update to perform.");
         		} else {
