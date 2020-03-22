@@ -40,7 +40,6 @@ public class PublisherCreate extends HttpServlet {
         // Map for storing messages.
         Map<String, String> messages = new HashMap<String, String>();
         req.setAttribute("messages", messages);
-    	System.out.println("!!!!!!!!!!!");
 
         // Retrieve and validate name.
         String publisherName = req.getParameter("publisherName");
@@ -51,8 +50,6 @@ public class PublisherCreate extends HttpServlet {
 	        	Publishers publisher = new Publishers(publisherName);
 	        	publisher = publishersDao.create(publisher);
 	        	messages.put("success", "Successfully created " + publisherName);
-	        	
-	        	System.out.println("!!!!!!!!!!!" + publisherName);
 	        } catch (SQLException e) {
 				e.printStackTrace();
 				throw new IOException(e);
