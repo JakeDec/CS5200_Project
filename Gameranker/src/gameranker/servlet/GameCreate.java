@@ -51,7 +51,6 @@ public class GameCreate extends HttpServlet {
         	String publisher = req.getParameter("publisher");
         	int year = Integer.valueOf(req.getParameter("releaseYear"));
 	        try {
-	        	// Exercise: parse the input for StatusLevel.
 	        	Publishers pub = new Publishers(publisher);
 	        	Games game = new Games(gameName,pub,year);
 	        	game = gamesDao.create(game);

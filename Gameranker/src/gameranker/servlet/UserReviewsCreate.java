@@ -62,7 +62,7 @@ protected GamesDao gamesDao;
 	        	String review = req.getParameter("review");
 	        	
 	        	Games game = gamesDao.getGameById(gameId); // Collect the Game
-	        	Users user = userDao.getUserById(userId); // Collect the User
+	        	Users user = userDao.getUserByUserId(userId); // Collect the User
 	        	Reviews rev = new Reviews(game,review); //initialize a review
 	        	
 	        	rev = reviewsDao.create(rev); //store the review in the db.
