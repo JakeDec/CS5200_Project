@@ -70,7 +70,7 @@ public class UserHasGameDao {
 			Users user = usersDao.getUserByUserId(userId);
 
 			while (results.next()) {
-				int gameId = results.getInt("GameId");
+				int gameId = results.getInt("GameIdFk");
 				float playTime = results.getFloat("PlayTime");
 
 				GamesDao gamesDao = GamesDao.getInstance();
