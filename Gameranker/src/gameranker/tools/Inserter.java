@@ -176,11 +176,11 @@ public class Inserter {
 		UserHasGame userHasGame = new UserHasGame(u1, g1, 99.99f);
 		System.out.println("Creating a User Has Game entry");
 		userHasGameDao.create(userHasGame);
-		System.out.println(userHasGameDao);
+		System.out.println(userHasGame);
 		
 		System.out.println("Getting games owned by the User Id 1:");
 		
-		List<UserHasGame> userHasGames = userHasGameDao.getUserHasGamesByUserId(u2.getUserId());
+		List<UserHasGame> userHasGames = userHasGameDao.getUserHasGamesByUserId(u1.getUserId());
 		for (UserHasGame uhg: userHasGames) {
 			System.out.println(uhg);
 		}
