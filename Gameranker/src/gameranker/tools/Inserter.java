@@ -119,22 +119,6 @@ public class Inserter {
 		List<CriticReviews> cr3 = criticReviewsDao.getReviewsByCriticName("Critic");
 		System.out.println(cr3);
 		
-		// USERHASGAME DAO
-		
-		UserHasGameDao userHasGameDao = UserHasGameDao.getInstance();
-		UserHasGame userHasGame = new UserHasGame(u1, g1, 99.99f);
-		System.out.println("Creating a User Has Game entry");
-		userHasGameDao.create(userHasGame);
-		System.out.println(userHasGameDao);
-		
-		System.out.println("Getting games owned by the new user:");
-		
-		List<UserHasGame> userHasGames = userHasGameDao.getUserHasGamesByUserId(u1.getUserId());
-		
-		for (UserHasGame uhg : userHasGames) {
-			System.out.println(uhg);
-		}
-		
 		// GENRE DAO
 		GenresDao genresDao = GenresDao.getInstance();
 		System.out.println("Creating a genre");
@@ -154,15 +138,11 @@ public class Inserter {
 		System.out.println("Adding Genre to Game");
 		gig1 = gameIsGenreDao.create(gig1);
 		System.out.println(gig1);
-		
-		
 		System.out.println("Getting genres for " + g1.toString());
 		List<Genres> genres = gameIsGenreDao.getGenresForGame(g1);
 		System.out.println(genres);
-		
-		
+
 		System.out.println("\n");
-		
 		
 		//PLATFORM - GAME ON PLATFORM
 		
@@ -178,9 +158,7 @@ public class Inserter {
 		System.out.println("\n");
 		
 
-		
 		GameOnPlatformDao gameOnPlatformDao = GameOnPlatformDao.getInstance();
-		
 		GameOnPlatform gop1 = new GameOnPlatform(g1, plat1);
 		System.out.println("Adding Platform to Game");
 		gameOnPlatformDao.create(gop1);
@@ -190,10 +168,26 @@ public class Inserter {
 		List<Platforms> platforms = gameOnPlatformDao.getPlatformsForGame(g2);
 		System.out.println(platforms);
 		
+		System.out.println("\n");
 		
+		// USERHASGAME DAO
 		
+		UserHasGameDao userHasGameDao = UserHasGameDao.getInstance();
+		UserHasGame userHasGame = new UserHasGame(u1, g1, 99.99f);
+		System.out.println("Creating a User Has Game entry");
+		userHasGameDao.create(userHasGame);
+		System.out.println(userHasGameDao);
 		
+		System.out.println("Getting games owned by the User Id 1:");
 		
+		List<UserHasGame> userHasGames = userHasGameDao.getUserHasGamesByUserId(u2.getUserId());
+		for (UserHasGame uhg: userHasGames) {
+			System.out.println(uhg);
+		}
+		
+
+
+		userHasGameDao.delete(userHasGame);
 		gameOnPlatformDao.delete(gop1);
 		platformsDao.delete(plat1);
 		gameIsGenreDao.delete(gig1);

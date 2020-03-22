@@ -65,7 +65,4 @@ public class Genres {
 		return String.format("%d: %s", genreId, genre);
 	}
 
-	public String toString() {
-		return String.format("%s", genre);
-	}
 }

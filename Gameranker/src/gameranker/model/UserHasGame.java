@@ -94,6 +94,6 @@ public class UserHasGame {
 	
 	@Override
 	public String toString() {
-		return String.format("%s: %s %d", user.getUserName(), game.getGameName(), playTime);
+		return String.format("%s: %s %f", user.getUserName(), game.getGameName(), playTime);
 	}
 }

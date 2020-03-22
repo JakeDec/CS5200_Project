@@ -64,8 +64,4 @@ public class Platforms {
 	public String toString() {
 		return String.format("%d: %s", platformId, platformName);
 	}
-
-	public String toString() {
-		return String.format("%s", platformName);
-	}
 }
