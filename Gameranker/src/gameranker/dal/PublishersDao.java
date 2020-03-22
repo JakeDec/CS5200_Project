@@ -62,14 +62,14 @@ public class PublishersDao {
 	}
 
 	public Publishers getPublisherById(int publisherId) throws SQLException {
-		String selectReview = "SELECT * FROM Publishers WHERE PublisherId = ?;";
+		String select = "SELECT * FROM Publishers WHERE PublisherId = ?;";
 		Connection connection = null;
 		PreparedStatement selectStmt = null;
 		ResultSet results = null;
 
 		try {
 			connection = connectionManager.getConnection();
-			selectStmt = connection.prepareStatement(selectReview);
+			selectStmt = connection.prepareStatement(select);
 			selectStmt.setInt(1, publisherId);
 			results = selectStmt.executeQuery();
 
@@ -99,13 +99,51 @@ public class PublishersDao {
 		return null;
 	}
 
+	public Publishers getPublisherByName(String publisherName) throws SQLException {
+		String select = "SELECT * FROM Publishers WHERE PublisherName = ?;";
+		Connection connection = null;
+		PreparedStatement selectStmt = null;
+		ResultSet results = null;
+
+		try {
+			connection = connectionManager.getConnection();
+			selectStmt = connection.prepareStatement(select);
+			selectStmt.setString(1, publisherName);
+			results = selectStmt.executeQuery();
+
+			if (results.next()) {
+				int publisherId = results.getInt("PublisherId");
+
+				return new Publishers(publisherId, publisherName);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+
+			throw e;
+		} finally {
+			if (connection != null) {
+				connection.close();
+			}
+
+			if (selectStmt != null) {
+				selectStmt.close();
+			}
+
+			if (results != null) {
+				results.close();
+			}
+		}
+
+		return null;
+	}
+
 	public Publishers updatePublisherName(Publishers publisher, String newPublisherName) throws SQLException {
-		String updateCompany = "UPDATE Publishers SET PublisherName = ? WHERE PublisherId = ?;";
+		String update = "UPDATE Publishers SET PublisherName = ? WHERE PublisherId = ?;";
 		Connection connection = null;
 		PreparedStatement updateStmt = null;
 		try {
 			connection = connectionManager.getConnection();
-			updateStmt = connection.prepareStatement(updateCompany);
+			updateStmt = connection.prepareStatement(update);
 			updateStmt.setString(1, newPublisherName);
 			updateStmt.setInt(2, publisher.getPublisherId());
 			updateStmt.executeUpdate();

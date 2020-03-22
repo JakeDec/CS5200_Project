@@ -55,7 +55,7 @@ public class GameDelete extends HttpServlet {
 	        try {
 	        	game = gamesDao.delete(game);
 	        	// Update the message.
-		        if (gameName == null) {
+		        if (game == null) {
 		            messages.put("title", "Successfully deleted " + gameName);
 		            messages.put("disableSubmit", "true");
 		        } else {

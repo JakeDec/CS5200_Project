@@ -8,18 +8,14 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Update a Publisher Name</title>
+<title>Delete a Publisher</title>
 </head>
 <body>
-	<h1>Update Name</h1>
-	<form action="publisherupdate" method="post">
+	<h1>Delete Publisher</h1>
+	<form action="publisherdelete" method="post">
 		<p>
-			<label for="oldpublishername">Current Publisher Name</label>
-			<input id="oldpublishername" name="oldpublishername" value="">
-		</p>
-		<p>
-			<label for="newpublishername">New Publisher Name</label>
-			<input id=newpublishername name="newpublishername" value="">
+			<label for="publishername">Publisher Name</label>
+			<input id="publishername" name="publishername" value="">
 		</p>
 		<p>
 			<input type="submit">

@@ -60,12 +60,12 @@ public class PublisherUpdate extends HttpServlet {
         req.setAttribute("messages", messages);
 
         // Retrieve a publisher and validate.
-        int publisherId = Integer.valueOf(req.getParameter("publisherid"));
-        if (publisherId == 0) {
+        String oldPublisherName = req.getParameter("oldpublishername");
+        if (oldPublisherName == null) {
             messages.put("success", "Please enter a valid publisherId.");
         } else {
         	try {
-        		Publishers publisher = publishersDao.getPublisherById(publisherId); 
+        		Publishers publisher = publishersDao.getPublisherByName(oldPublisherName); 
         		if(publisher == null) {
         			messages.put("success", "publisher does not exist. No update to perform.");
         		} else {
