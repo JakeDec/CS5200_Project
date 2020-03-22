@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import gameranker.model.GameOnPlatform;
+import gameranker.model.Games;
+import gameranker.model.Publishers;
 
 public class GameOnPlatformDao {
 	protected ConnectionManager connectionManager;
@@ -19,7 +21,6 @@ public class GameOnPlatformDao {
 		}
 		return instance;
 	}
-	
 	
 	public GameOnPlatform create(GameOnPlatform gameOnPlatform) throws SQLException {
 		String insert = "INSERT INTO GameOnPlatform (GameIdFk, PlatformIdFk) " + 
@@ -50,7 +51,7 @@ public class GameOnPlatformDao {
 	}
 
 	public GameOnPlatform delete(GameOnPlatform gameOnPlatform) throws SQLException {
-		String delete = "DELETE FROM GameOnPlatform WHERE GameIdFk = ? AND PlatformIdFk = ;";
+		String delete = "DELETE FROM GameOnPlatform WHERE GameIdFk = ? AND PlatformIdFk = ?;";
 		Connection connection = null;
 		PreparedStatement deleteStmt = null;
 		try {
@@ -75,5 +76,4 @@ public class GameOnPlatformDao {
 			}
 		}
 	}
-
 }

@@ -3,7 +3,7 @@ package gameranker.model;
 public class UserHasGame {
 	private Users user;
 	private Games game;
-	private int playTime;
+	private float playTime;
 	
 //	CREATE TABLE UserHasGame (
 //			  UserIdFk INT NOT NULL,
@@ -27,7 +27,7 @@ public class UserHasGame {
 	 * @param game
 	 * @param playTime
 	 */
-	public UserHasGame(Users user, Games game, int playTime) {
+	public UserHasGame(Users user, Games game, float playTime) {
 		this.user = user;
 		this.game = game;
 		this.playTime = playTime;
@@ -80,7 +80,7 @@ public class UserHasGame {
 	 * Get the play time from the UserHasGame Object.
 	 * @return the play time.
 	 */
-	public int getPlayTime() {
+	public float getPlayTime() {
 		return this.playTime;
 	}
 	
@@ -88,7 +88,7 @@ public class UserHasGame {
 	 * Change the play time assigned to the UserHasGame Object.
 	 * @param playTime
 	 */
-	public void setPlayTime(int playTime) {
+	public void setPlayTime(float playTime) {
 		this.playTime = playTime;
 	}
 }
