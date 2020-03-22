@@ -80,9 +80,51 @@ public class Inserter {
 		System.out.println("Getting Game 2 by ID");
 		Games g2 = gamesDao.getGameById(2);
 		System.out.println(g2);
+		System.out.println("\n");
+		
+		// REVIEWS DAOS
+
+		Reviews r1 = new Reviews(g1, "Great Game!7");
+		Reviews r2 = new Reviews(g1, "Awesome Game!8");
+		UserReviews ur1 = new UserReviews(r1, u1, 10.0f);
+		CriticReviews cr1 = new CriticReviews(r1, "Critic", 10.0f);
+		UserReviewsDao userReviewsDao = UserReviewsDao.getInstance();
+		CriticReviewsDao criticReviewsDao = CriticReviewsDao.getInstance();
+
+		System.out.println("Creating a User Review");
+		ur1 = userReviewsDao.create(ur1);
+		System.out.println(ur1);
+
+		System.out.println("Getting a User Review 5 by ID");
+		UserReviews ur2 = userReviewsDao.getUserReviewById(5);
+		System.out.println(ur2);
+		
+		System.out.println("Getting all user reviews by Jake Dec");
+		List<UserReviews> ur3 = userReviewsDao.getReviewsByUser(u1);
+		System.out.println(ur3);
+
+		
+		System.out.println("\n");
+		
+		System.out.println("Creating a Critic Review");
+		cr1 = criticReviewsDao.create(cr1);
+		System.out.println(cr1);
+		
+		System.out.println("Getting a Critic Review 293670 by ID");
+		CriticReviews cr2 = criticReviewsDao.getCriticReviewById(293670);
+		System.out.println(cr2);
+		
+		System.out.println("Getting all critc reviews by Critic");
+		List<CriticReviews> cr3 = criticReviewsDao.getReviewsByCriticName("Critic");
+		System.out.println(ur3);
 		
 		
 		
+		System.out.println("\n");
+		
+
+		criticReviewsDao.delete(cr1);
+		userReviewsDao.delete(ur1);
 		gamesDao.delete(g1);
 		publishersDao.delete(p1);
 		usersDao.delete(u1);

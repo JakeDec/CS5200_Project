@@ -3,7 +3,7 @@ package gameranker.model;
 public class CriticReviews {
 	protected Reviews review;
 	protected String criticName;
-	protected double score;
+	protected float score;
 	
 //	CREATE TABLE CriticReviews (
 //			  ReviewIdFk INT NOT NULL,
@@ -21,7 +21,7 @@ public class CriticReviews {
 	 * @param criticName
 	 * @param score
 	 */
-	public CriticReviews(Reviews review, String criticName, double score) {
+	public CriticReviews(Reviews review, String criticName, float score) {
 		this.review = review;
 		this.criticName = criticName;
 		this.score = score;
@@ -54,11 +54,15 @@ public class CriticReviews {
 		this.criticName = criticName;
 	}
 	
-	public double getScore() {
+	public float getScore() {
 		return this.score;
 	}
-	public void setScore(double score) {
+	public void setScore(float score) {
 		this.score = score;
+	}
+	
+	public String toString() {
+		return String.format("%s %s %f", review.toString(), criticName, score);
 	}
 
 }

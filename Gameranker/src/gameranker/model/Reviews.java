@@ -32,9 +32,9 @@ public class Reviews {
 	 * @param reviewId
 	 * @param game
 	 */
-	public Reviews(int reviewId, Games game) {
-		this.reviewId = reviewId;
+	public Reviews(Games game, String review) {
 		this.game = game;
+		this.review = review;
 	}
 	
 	
@@ -84,6 +84,10 @@ public class Reviews {
 	 */
 	public void setReview(String review) {
 		this.review = review;
+	}
+	
+	public String toString() {
+		return String.format("%d: (%s) %s", reviewId, game.toString(), review);
 	}
 
 }

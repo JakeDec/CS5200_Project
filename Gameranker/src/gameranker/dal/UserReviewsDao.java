@@ -2,10 +2,16 @@ package gameranker.dal;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import gameranker.model.CriticReviews;
+import gameranker.model.Games;
+import gameranker.model.Reviews;
 import gameranker.model.UserReviews;
+import gameranker.model.Users;
 
 public class UserReviewsDao extends ReviewsDao{
 	// Single pattern: instantiation is limited to one object.
@@ -20,17 +26,32 @@ public class UserReviewsDao extends ReviewsDao{
 		return instance;
 	}
 	
+//	CREATE TABLE UserReviews (
+//	  ReviewIdFk INT NOT NULL,
+//	  UserIdFk INT NOT NULL,
+//	  Score FLOAT,
+//	  CONSTRAINT UserReviewsReviewFk
+//	    FOREIGN KEY (ReviewIdFk)
+//	    REFERENCES Reviews (ReviewId)
+//	    ON UPDATE CASCADE ON DELETE CASCADE,
+//	  CONSTRAINT UserReviewsUsersFk
+//	    FOREIGN KEY (UserIdFk)
+//	    REFERENCES Users (UserId)
+//	    ON UPDATE CASCADE ON DELETE CASCADE
+//	) ENGINE = InnoDB;
 	
 	public UserReviews create(UserReviews review) throws SQLException {
-		super.create(review.getReview());
-		String insert = "";
+		review.setReview(super.create(review.getReview()));
+		String insert = "INSERT INTO UserReviews (ReviewIdFk,UserIdFk,Score) VALUES (?,?,?);";
 		Connection connection = null;
 		PreparedStatement insertStmt = null;
 		try {
 			connection = connectionManager.getConnection();
 			insertStmt = connection.prepareStatement(insert);
 
-			insertStmt.setString(1, "");
+			insertStmt.setInt(1, review.getReview().getReviewId());
+			insertStmt.setInt(2, review.getUser().getUserId());
+			insertStmt.setFloat(3, review.getScore());
 			
 			insertStmt.executeUpdate();
 			
@@ -50,18 +71,25 @@ public class UserReviewsDao extends ReviewsDao{
 
 	public UserReviews delete(UserReviews review) throws SQLException {
 		super.delete(review.getReview());
-		String delete = "";
+		return null;
+	}
+	
+	public UserReviews getUserReviewById(int id) throws SQLException {
+		String select = "SELECT ReviewIdFk,UserIdFk,Score FROM UserReviews WHERE ReviewIdFK=?;";
 		Connection connection = null;
-		PreparedStatement deleteStmt = null;
+		PreparedStatement selectStmt = null;
+		ResultSet results = null;
 		try {
 			connection = connectionManager.getConnection();
-			deleteStmt = connection.prepareStatement(delete);
-
-			deleteStmt.setString(1, "");
-			
-			deleteStmt.executeUpdate();
-
-			return null;
+			selectStmt = connection.prepareStatement(select);
+			selectStmt.setInt(1, id);
+			results = selectStmt.executeQuery();
+			if(results.next()) {
+				return new UserReviews(
+				super.getReviewById(results.getInt("ReviewIdFk")),
+				UsersDao.getInstance().getUserById(results.getInt("UserIdFk")),
+				results.getFloat("Score"));
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw e;
@@ -69,10 +97,48 @@ public class UserReviewsDao extends ReviewsDao{
 			if(connection != null) {
 				connection.close();
 			}
-			if(deleteStmt != null) {
-				deleteStmt.close();
+			if(selectStmt != null) {
+				selectStmt.close();
+			}
+			if(results != null) {
+				results.close();
+			}
+		}
+		return null;
+	}
+	
+	public List<UserReviews> getReviewsByUser(Users user) throws SQLException {
+		String select = "SELECT ReviewIdFk,UserIdFk,Score FROM UserReviews WHERE UserIdFk=?;";
+		Connection connection = null;
+		PreparedStatement selectStmt = null;
+		ResultSet results = null;
+		try {
+			connection = connectionManager.getConnection();
+			selectStmt = connection.prepareStatement(select);
+			selectStmt.setInt(1, user.getUserId());
+			results = selectStmt.executeQuery();
+			List<UserReviews> list = new ArrayList<UserReviews>();
+			while(results.next()) {
+				UserReviews temp = new UserReviews(
+						super.getReviewById(results.getInt("ReviewIdFk")),
+						user,
+						results.getFloat("Score"));
+				list.add(temp);
+			}
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if(connection != null) {
+				connection.close();
+			}
+			if(selectStmt != null) {
+				selectStmt.close();
+			}
+			if(results != null) {
+				results.close();
 			}
 		}
 	}
-
 }

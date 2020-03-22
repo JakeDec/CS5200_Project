@@ -77,5 +77,9 @@ public class UserReviews {
 	public void setScore(float score) {
 		this.score = score;
 	}
+	
+	public String toString() {
+		return String.format("%s (%s) %f", review.toString(), user.toString(), score);
+	}
 
 }
