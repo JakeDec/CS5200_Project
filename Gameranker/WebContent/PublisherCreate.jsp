@@ -17,6 +17,9 @@
 			<label for="publisherName">PublisherName</label>
 			<input id="publisherName" name="publisherName" value="">
 		</p>
+		<p>
+			<input type="submit">
+		</p>
 	</form>
 	<br/><br/>
 	<p>
