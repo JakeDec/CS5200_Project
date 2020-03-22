@@ -28,7 +28,7 @@ public class Inserter {
 		System.out.println("Checking to see if id was added");
 		System.out.println(u1);
 		
-		System.out.println("Changing the userName");
+		System.out.println("Changing the userName to Jake Dec");
 		u1 = usersDao.setUserName(u1, "Jake Dec");
 		System.out.println(u1);
 
