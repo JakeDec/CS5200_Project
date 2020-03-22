@@ -19,7 +19,7 @@ public class Inserter {
 
 	public static void main(String[] args) throws SQLException {
 		
-		// USER DAO
+		// UsersDao
 		
 		UsersDao usersDao = UsersDao.getInstance();
 		
@@ -44,7 +44,7 @@ public class Inserter {
 		
 		System.out.println("\n");
 		
-		// PUBLISHER DAO
+		// PublishersDao
 		
 		PublishersDao publishersDao = PublishersDao.getInstance();
 
@@ -63,7 +63,7 @@ public class Inserter {
 		
 		System.out.println("\n");
 		
-		// GAMES DAO	
+		// GamesDao
 		
 		GamesDao gamesDao = GamesDao.getInstance();
 		System.out.println("Creating new game.");
@@ -88,7 +88,7 @@ public class Inserter {
 		System.out.println(g3);
 		System.out.println("\n");
 		
-		// REVIEWS DAOS
+		// UserReviewsDao, CriticReviewsDao, ReviewsDao
 
 		Reviews r1 = new Reviews(g1, "Great Game!7");
 		Reviews r2 = new Reviews(g1, "Awesome Game!8");
@@ -115,6 +115,11 @@ public class Inserter {
 		cr1 = criticReviewsDao.create(cr1);
 		System.out.println(cr1);
 		
+		System.out.println("Changing that review's score to 5");
+		criticReviewsDao.updateScore(cr1, 5.0f);
+		
+		System.out.println(cr1);
+		
 		System.out.println("Getting a Critic Review 293670 by ID");
 		CriticReviews cr2 = criticReviewsDao.getCriticReviewById(293670);
 		System.out.println(cr2);
@@ -123,7 +128,8 @@ public class Inserter {
 		List<CriticReviews> cr3 = criticReviewsDao.getReviewsByCriticName("Critic");
 		System.out.println(cr3);
 		
-		// GENRE DAO
+		// GenresDao
+		
 		GenresDao genresDao = GenresDao.getInstance();
 		System.out.println("Creating a genre");
 		Genres genre1 = new Genres("SQL Project");
@@ -136,7 +142,8 @@ public class Inserter {
 
 		System.out.println("\n");
 
-		// GAME IS GENRE DAO
+		// GameIsGenreDao
+		
 		GameIsGenreDao gameIsGenreDao = GameIsGenreDao.getInstance();
 		GameIsGenre gig1 = new GameIsGenre(g1, genre1);
 		System.out.println("Adding Genre to Game");
@@ -148,7 +155,7 @@ public class Inserter {
 
 		System.out.println("\n");
 		
-		//PLATFORM - GAME ON PLATFORM
+		// PlatformsDao
 		
 		PlatformsDao platformsDao = PlatformsDao.getInstance();
 		System.out.println("Creating a platform: Classroom");
@@ -160,7 +167,8 @@ public class Inserter {
 		Platforms plat2 = platformsDao.getPlatformById(42);
 		System.out.println(plat2);
 		System.out.println("\n");
-		
+
+		// GameOnPlatformDao
 
 		GameOnPlatformDao gameOnPlatformDao = GameOnPlatformDao.getInstance();
 		GameOnPlatform gop1 = new GameOnPlatform(g1, plat1);
@@ -174,7 +182,7 @@ public class Inserter {
 		
 		System.out.println("\n");
 		
-		// USERHASGAME DAO
+		// UserHasGameDao
 		
 		UserHasGameDao userHasGameDao = UserHasGameDao.getInstance();
 		UserHasGame userHasGame = new UserHasGame(u1, g1, 99.99f);
@@ -189,8 +197,6 @@ public class Inserter {
 			System.out.println(uhg);
 		}
 		
-
-
 		// Remove our new Dummy Data
 		userHasGameDao.delete(userHasGame);
 		gameOnPlatformDao.delete(gop1);
@@ -202,6 +208,5 @@ public class Inserter {
 		gamesDao.delete(g1);
 		publishersDao.delete(p1);
 		usersDao.delete(u1);
-		
 	}
 }

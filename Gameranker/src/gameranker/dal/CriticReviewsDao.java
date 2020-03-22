@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gameranker.model.CriticReviews;
+import gameranker.model.UserHasGame;
 import gameranker.model.UserReviews;
 import gameranker.model.Users;
 
@@ -23,6 +24,7 @@ public class CriticReviewsDao extends ReviewsDao{
 		}
 		return instance;
 	}
+	
 //	CREATE TABLE CriticReviews (
 //	  ReviewIdFk INT NOT NULL,
 //	  CriticName VARCHAR(255),
@@ -60,11 +62,6 @@ public class CriticReviewsDao extends ReviewsDao{
 				insertStmt.close();
 			}
 		}
-	}
-
-	public CriticReviews delete(CriticReviews review) throws SQLException {
-		super.delete(review.getReview());
-		return null;
 	}
 	
 	public CriticReviews getCriticReviewById(int id) throws SQLException {
@@ -134,5 +131,36 @@ public class CriticReviewsDao extends ReviewsDao{
 			}
 		}
 	}
+	
+	public CriticReviews updateScore(CriticReviews criticReview, float score) throws SQLException {
+		String update = "UPDATE CriticReviews SET Score = ? WHERE ReviewIdFk = ?;";
+		Connection connection = null;
+		PreparedStatement updateStmt = null;
+		try {
+			connection = connectionManager.getConnection();
+			updateStmt = connection.prepareStatement(update);
+			updateStmt.setFloat(1, criticReview.getScore());
+			updateStmt.setInt(2, criticReview.getReview().getReviewId());
+			updateStmt.executeUpdate();
 
+			criticReview.setScore(score);
+			
+			return criticReview;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if(connection != null) {
+				connection.close();
+			}
+			if(updateStmt != null) {
+				updateStmt.close();
+			}
+		}
+	}
+
+	public CriticReviews delete(CriticReviews review) throws SQLException {
+		super.delete(review.getReview());
+		return null;
+	}
 }
