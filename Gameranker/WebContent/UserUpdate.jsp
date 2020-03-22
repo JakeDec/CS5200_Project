@@ -15,7 +15,7 @@
 	<form action="userupdate" method="post">
 		<p>
 			<label for="userid">UserId</label>
-			<input id="userid" name="userid" value="">
+			<input id="userid" name="userid" value="0">
 		</p>
 		
 		<p>
