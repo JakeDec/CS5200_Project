@@ -8,19 +8,19 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Update a Game</title>
+<title>Update a User</title>
 </head>
 <body>
-	<h1>Update Game</h1>
-	<form action="gameupdate" method="post">
+	<h1>Update User</h1>
+	<form action="userupdate" method="post">
 		<p>
-			<label for="gameid">GameId</label>
-			<input id="gameid" name="gameid" value="">
+			<label for="userid">UserId</label>
+			<input id="userid" name="userid" value="">
 		</p>
 		
 		<p>
-			<label for="newpublisher">NewPublisher</label>
-			<input id="newpublisher" name="newpublisher" value="">
+			<label for="newusername">NewUserName</label>
+			<input id="newusername" name="newusername" value="">
 		</p>
 		
 		
