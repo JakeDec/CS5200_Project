@@ -34,12 +34,12 @@ public class GameUpdate extends HttpServlet {
         req.setAttribute("messages", messages);
 
         // Retrieve game and validate.
-        int gameId = Integer.valueOf(req.getParameter("gameid"));
-        if (gameId == 0) {
+        String gameId = req.getParameter("gameid");
+        if (gameId == null) {
             messages.put("success", "Please enter a valid GameId.");
         } else {
         	try {
-        		Games game = gamesDao.getGameById(gameId);
+        		Games game = gamesDao.getGameById(Integer.valueOf(gameId));
         		if(game == null) {
         			messages.put("success", "Game does not exist.");
         		}
