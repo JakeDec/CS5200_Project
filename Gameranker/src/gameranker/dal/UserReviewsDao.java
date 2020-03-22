@@ -9,6 +9,7 @@ import java.util.List;
 
 import gameranker.model.CriticReviews;
 import gameranker.model.Games;
+import gameranker.model.Publishers;
 import gameranker.model.Reviews;
 import gameranker.model.UserReviews;
 import gameranker.model.Users;
@@ -105,6 +106,33 @@ public class UserReviewsDao extends ReviewsDao{
 			}
 		}
 		return null;
+	}
+	
+	public UserReviews updateScore(UserReviews userReview, float score) throws SQLException {
+		String update = "UPDATE UserReviews SET Score = ? WHERE ReviewIdFk = ?;";
+		Connection connection = null;
+		PreparedStatement updateStmt = null;
+		try {
+			connection = connectionManager.getConnection();
+			updateStmt = connection.prepareStatement(update);
+			updateStmt.setFloat(1, userReview.getScore());
+			updateStmt.setInt(2, userReview.getReview().getReviewId());
+			updateStmt.executeUpdate();
+
+			userReview.setScore(score);
+			
+			return userReview;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if(connection != null) {
+				connection.close();
+			}
+			if(updateStmt != null) {
+				updateStmt.close();
+			}
+		}
 	}
 	
 	public List<UserReviews> getReviewsByUser(Users user) throws SQLException {
