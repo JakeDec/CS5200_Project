@@ -14,7 +14,7 @@
 	<h1>Create Publisher</h1>
 	<form action="publishercreate" method="post">
 		<p>
-			<label for="publisherName">PublisherName</label>
+			<label for="publisherName">Publisher Name</label>
 			<input id="publisherName" name="publisherName" value="">
 		</p>
 		<p>

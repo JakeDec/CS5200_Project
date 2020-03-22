@@ -65,8 +65,7 @@ public class PublisherDelete extends HttpServlet {
 		        	}
 		        }
 	        } catch (SQLException e) {
-	        	e.printStackTrace();
-				throw new IOException(e);
+        		messages.put("success", "Failed to delete publisher with name: " + publisherName);
 	        }
         }
         

@@ -49,10 +49,9 @@ public class PublisherCreate extends HttpServlet {
 	        try {
 	        	Publishers publisher = new Publishers(publisherName);
 	        	publisher = publishersDao.create(publisher);
-	        	messages.put("success", "Successfully created " + publisherName);
+	        	messages.put("success", "Successfully created publisher with name: " + publisherName);
 	        } catch (SQLException e) {
-				e.printStackTrace();
-				throw new IOException(e);
+	        	messages.put("success", "Failed to create publisher with name: " + publisherName);
 	        }
         }
         

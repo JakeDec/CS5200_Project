@@ -49,7 +49,7 @@ public class PublisherUpdate extends HttpServlet {
 	        }
         }
         
-        req.getRequestDispatcher("/publisherUpdate.jsp").forward(req, resp);
+        req.getRequestDispatcher("/PublisherUpdate.jsp").forward(req, resp);
 	}
 	
 	@Override
