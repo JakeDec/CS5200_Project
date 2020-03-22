@@ -89,7 +89,7 @@ public class UsersDao {
 		}
 	}
 	
-	public Users getUserById(int userId) throws SQLException {
+	public Users getUserByUserId(int userId) throws SQLException {
 		String select = "SELECT UserId,UserName,SteamId FROM Users WHERE UserId=?;";
 		Connection connection = null;
 		PreparedStatement selectStmt = null;
@@ -98,6 +98,39 @@ public class UsersDao {
 			connection = connectionManager.getConnection();
 			selectStmt = connection.prepareStatement(select);
 			selectStmt.setInt(1, userId);
+			results = selectStmt.executeQuery();
+			if(results.next()) {
+				return new Users(
+				results.getInt("UserId"),
+				results.getInt("SteamId"),
+				results.getString("UserName"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if(connection != null) {
+				connection.close();
+			}
+			if(selectStmt != null) {
+				selectStmt.close();
+			}
+			if(results != null) {
+				results.close();
+			}
+		}
+		return null;
+	}
+	
+	public Users getUserBySteamId(int steamId) throws SQLException {
+		String select = "SELECT * FROM Users WHERE SteamId=?;";
+		Connection connection = null;
+		PreparedStatement selectStmt = null;
+		ResultSet results = null;
+		try {
+			connection = connectionManager.getConnection();
+			selectStmt = connection.prepareStatement(select);
+			selectStmt.setInt(1, steamId);
 			results = selectStmt.executeQuery();
 			if(results.next()) {
 				return new Users(

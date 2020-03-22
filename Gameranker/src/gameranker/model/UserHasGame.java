@@ -91,4 +91,9 @@ public class UserHasGame {
 	public void setPlayTime(float playTime) {
 		this.playTime = playTime;
 	}
+	
+	@Override
+	public String toString() {
+		return String.format("%s: %s %d", user.getUserName(), game.getGameName(), playTime);
+	}
 }

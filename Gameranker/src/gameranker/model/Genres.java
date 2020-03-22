@@ -61,4 +61,7 @@ public class Genres {
 		this.genre = genre;
 	}
 
+	public String toString() {
+		return String.format("%s", genre);
+	}
 }

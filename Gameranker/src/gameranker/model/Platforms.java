@@ -61,4 +61,7 @@ public class Platforms {
 		this.platformName = platformName;
 	}
 
+	public String toString() {
+		return String.format("%s", platformName);
+	}
 }

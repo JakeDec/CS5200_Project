@@ -56,7 +56,7 @@ public class UserHasGameDao {
 	
 	public List<UserHasGame> getUserHasGamesByUserId(int userId) throws SQLException {
 		List<UserHasGame> userHasGames = new ArrayList<UserHasGame>();
-		String select = "SELECT * FROM UserHasGame WHERE UserId = ?;";
+		String select = "SELECT * FROM UserHasGame WHERE UserIdFk = ?;";
 		Connection connection = null;
 		PreparedStatement selectStmt = null;
 		ResultSet results = null;
@@ -67,7 +67,7 @@ public class UserHasGameDao {
 			results = selectStmt.executeQuery();
 			
 			UsersDao usersDao = UsersDao.getInstance();
-			Users user = usersDao.getUserById(userId);
+			Users user = usersDao.getUserByUserId(userId);
 
 			while (results.next()) {
 				int gameId = results.getInt("GameId");
@@ -103,7 +103,7 @@ public class UserHasGameDao {
 	
 	public List<UserHasGame> getUserHasGamesByUserIdAndGame(int userId, int gameId) throws SQLException {
 		List<UserHasGame> userHasGames = new ArrayList<UserHasGame>();
-		String select = "SELECT * FROM UserHasGame WHERE UserId = ? AND gameId = ?;";
+		String select = "SELECT * FROM UserHasGame WHERE UserIdFk = ? AND GameIdFk = ?;";
 		Connection connection = null;
 		PreparedStatement selectStmt = null;
 		ResultSet results = null;
@@ -118,7 +118,7 @@ public class UserHasGameDao {
 			Games game = gamesDao.getGameById(gameId);
 			
 			UsersDao usersDao = UsersDao.getInstance();
-			Users user = usersDao.getUserById(userId);
+			Users user = usersDao.getUserByUserId(userId);
 
 			while (results.next()) {
 				float playTime = results.getFloat("PlayTime");
@@ -149,7 +149,7 @@ public class UserHasGameDao {
 	}
 	
 	public UserHasGame updatePlayTime(UserHasGame userHasGame, float playTime) throws SQLException {
-		String update = "UPDATE UserHasGame SET playTime = ? WHERE GameId = ? AND UserId = ?;";
+		String update = "UPDATE UserHasGame SET playTime = ? WHERE GameIdFk = ? AND UserIdFk = ?;";
 		Connection connection = null;
 		PreparedStatement updateStmt = null;
 		try {
@@ -177,7 +177,7 @@ public class UserHasGameDao {
 	}
 
 	public UserHasGame delete(UserHasGame userHasGame) throws SQLException {
-		String delete = "DELETE FROM GameOnPlatform WHERE GameIdFk = ? AND UserIdFk = ?;";
+		String delete = "DELETE FROM UserHasGame WHERE GameIdFk = ? AND UserIdFk = ?;";
 		Connection connection = null;
 		PreparedStatement deleteStmt = null;
 		try {

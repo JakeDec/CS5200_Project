@@ -20,7 +20,9 @@ public class Inserter {
 	public static void main(String[] args) throws SQLException {
 		
 		// USER DAO
+		
 		UsersDao usersDao = UsersDao.getInstance();
+		
 		Users u1 = new Users("Jake");
 		System.out.println("Adding user Jake");
 		u1 = usersDao.create(u1);
@@ -37,7 +39,7 @@ public class Inserter {
 		System.out.println(u1);
 
 		System.out.println("Checking to see if getting user by id works");
-		Users u2 = usersDao.getUserById(1);
+		Users u2 = usersDao.getUserByUserId(1);
 		System.out.println(u2);
 		
 		System.out.println("\n");
@@ -61,8 +63,8 @@ public class Inserter {
 		
 		System.out.println("\n");
 		
-		
 		// GAMES DAO	
+		
 		GamesDao gamesDao = GamesDao.getInstance();
 		System.out.println("Creating new game.");
 		Games g1 = new Games("Gold Team Rules", p2, 2019);
@@ -103,7 +105,6 @@ public class Inserter {
 		List<UserReviews> ur3 = userReviewsDao.getReviewsByUser(u1);
 		System.out.println(ur3);
 
-		
 		System.out.println("\n");
 		
 		System.out.println("Creating a Critic Review");
@@ -117,59 +118,72 @@ public class Inserter {
 		System.out.println("Getting all critc reviews by Critic");
 		List<CriticReviews> cr3 = criticReviewsDao.getReviewsByCriticName("Critic");
 		System.out.println(ur3);
-		
-		
-		
+
 		System.out.println("\n");
 		
+		// USERHASGAME DAO
+		
+		UserHasGameDao userHasGameDao = UserHasGameDao.getInstance();
+		UserHasGame userHasGame = new UserHasGame(u1, g1, 99.99f);
+		System.out.println("Creating a User Has Game entry");
+		userHasGameDao.create(userHasGame);
+		System.out.println(userHasGameDao);
+		
+		System.out.println("Getting games owned by the new user:");
+		
+		List<UserHasGame> userHasGames = userHasGameDao.getUserHasGamesByUserId(u1.getUserId());
+		
+		for (UserHasGame uhg : userHasGames) {
+			System.out.println(uhg);
+		}
+		
+		// GENRES DAO
+		
+		GenresDao genresDao = GenresDao.getInstance();
+		Genres genre = new Genres("Project");
+		System.out.println("Creating a Genre entry");
+		genresDao.create(genre);
+		System.out.println(genre);
+		
+		// GAMEISGENRE DAO
 
+		GameIsGenreDao gameIsGenreDao = GameIsGenreDao.getInstance();
+		GameIsGenre gameIsGenre = new GameIsGenre(g1, genre);
+		System.out.println("Creating a Game Is Genre entry");
+		gameIsGenreDao.create(gameIsGenre);
+		System.out.println(gameIsGenre);
+		
+		System.out.println("Getting games of the new genre:");
+		
+		List<GameIsGenre> gameIsGenres = gameIsGenreDao.getGameIsGenresByGameId(g1.getGameId());
+		
+		for (GameIsGenre gig : gameIsGenres) {
+			System.out.println(gig);
+		}
+		
+
+		// PLATFORM DAO
+		
+		PlatformsDao platformsDao = PlatformsDao.getInstance();
+		Platforms platform = new Platforms("Classroom");
+		platformsDao.create(platform);
+
+		// GAMEONPLATFORM DAO
+
+		GameOnPlatformDao gameOnPlatformDao = GameOnPlatformDao.getInstance();
+		GameOnPlatform gameOnPlatform = new GameOnPlatform(g1, platform);
+		gameOnPlatformDao.create(gameOnPlatform);
+		
+		// DELETE OBJECTS
+		
+		gameOnPlatformDao.delete(gameOnPlatform);
+		platformsDao.delete(platform);
+		gameIsGenreDao.delete(gameIsGenre);
+		genresDao.delete(genre);
 		criticReviewsDao.delete(cr1);
 		userReviewsDao.delete(ur1);
 		gamesDao.delete(g1);
 		publishersDao.delete(p1);
 		usersDao.delete(u1);
-		
-		
-		
-		
-		
-		
-//		
-//		GenresDao genresDao = GenresDao.getInstance();
-//		Genres genre = new Genres("Project");
-//		genresDao.create(genre);
-//		
-//		GameIsGenreDao gameIsGenreDao = GameIsGenreDao.getInstance();
-//		GameIsGenre gameIsGenre = new GameIsGenre(game, genre);
-//		gameIsGenreDao.create(gameIsGenre);
-//		
-//		PlatformsDao platformsDao = PlatformsDao.getInstance();
-//		Platforms platform = new Platforms("Classroom");
-//		platformsDao.create(platform);
-//		
-//		GameOnPlatformDao gameOnPlatformDao = GameOnPlatformDao.getInstance();
-//		GameOnPlatform gameOnPlatform = new GameOnPlatform(game, platform);
-//		gameOnPlatformDao.create(gameOnPlatform);
-//		
-//		//
-//		gameOnPlatformDao.delete(gameOnPlatform);
-//		platformsDao.delete(platform);
-//		gameIsGenreDao.delete(gameIsGenre);
-//		genresDao.delete(genre);
-//		gamesDao.delete(game);
-//		publishersDao.delete(publisher);
-		
-		
-//		
-//		
-//		
-//		// DAO instances.
-//		UserHasGameDao userHasGameDao = UserHasGameDao.getInstance();
-//		UsersDao usersDao = UsersDao.getInstance();
-//		
-//		ReviewsDao reviewsDao = ReviewsDao.getInstance();
-//		CriticReviewsDao criticReviewsDao = CriticReviewsDao.getInstance();
-//		UserReviewsDao userReviewsDao = UserReviewsDao.getInstance();
-		
 	}
 }
