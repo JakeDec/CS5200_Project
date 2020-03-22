@@ -23,3 +23,5 @@
 hs_err_pid*
 *.iml
 .idea/
+Gameranker/src/gameranker/dal/ConnectionManager.java
+Gameranker/src/gameranker/dal/ConnectionManager.java

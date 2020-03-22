@@ -39,6 +39,16 @@ public class Users {
 	}
 	
 	/**
+	 * Construct a User object without a steam id. 
+	 * this.steamId = NULL.
+	 * @param userId
+	 * @param userName
+	 */
+	public Users(String userName) {
+		this.userName = userName;
+	}
+	
+	/**
 	 * Get the User Id from the User object.
 	 * @return the user id.
 	 */
@@ -84,6 +94,10 @@ public class Users {
 	 */
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+	
+	public String toString() {
+		return String.format("%d: %s %s", userId, userName, steamId == 0 ? null : steamId);
 	}
 	
 

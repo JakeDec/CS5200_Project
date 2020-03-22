@@ -22,15 +22,15 @@ public class UserReviewsDao extends ReviewsDao{
 	
 	
 	public UserReviews create(UserReviews review) throws SQLException {
-		super.create(review);
+		super.create(review.getReview());
 		String insert = "";
 		Connection connection = null;
 		PreparedStatement insertStmt = null;
 		try {
 			connection = connectionManager.getConnection();
 			insertStmt = connection.prepareStatement(insert);
-			
-			insertStmt.setString(1, review.XXX());
+
+			insertStmt.setString(1, "");
 			
 			insertStmt.executeUpdate();
 			
@@ -49,15 +49,15 @@ public class UserReviewsDao extends ReviewsDao{
 	}
 
 	public UserReviews delete(UserReviews review) throws SQLException {
-		super.delete(review);
+		super.delete(review.getReview());
 		String delete = "";
 		Connection connection = null;
 		PreparedStatement deleteStmt = null;
 		try {
 			connection = connectionManager.getConnection();
 			deleteStmt = connection.prepareStatement(delete);
-			
-			deleteStmt.setString(1, review.XXX());
+
+			deleteStmt.setString(1, "");
 			
 			deleteStmt.executeUpdate();
 
