@@ -106,6 +106,45 @@ public class GamesDao {
 		}
 
 		return null;
+	}	
+	
+	public Games getGameByName(String gameName) throws SQLException {
+		String select = "SELECT * FROM Games WHERE GameName = ?;";
+		Connection connection = null;
+		PreparedStatement selectStmt = null;
+		ResultSet results = null;
+		try {
+			connection = connectionManager.getConnection();
+			selectStmt = connection.prepareStatement(select);
+			selectStmt.setString(1, gameName);
+			results = selectStmt.executeQuery();
+
+			if (results.next()) {
+				return new Games(
+						results.getInt("GameId"),
+						results.getString("GameName"), 
+						PublishersDao.getInstance().getPublisherById(results.getInt("PublisherIdFk")),
+						results.getInt("ReleaseYear"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+
+			throw e;
+		} finally {
+			if (connection != null) {
+				connection.close();
+			}
+
+			if (selectStmt != null) {
+				selectStmt.close();
+			}
+
+			if (results != null) {
+				results.close();
+			}
+		}
+
+		return null;
 	}
 
 	public Games delete(Games game) throws SQLException {

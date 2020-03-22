@@ -82,6 +82,10 @@ public class Inserter {
 		System.out.println("Getting Game 2 by ID");
 		Games g2 = gamesDao.getGameById(2);
 		System.out.println(g2);
+
+		System.out.println("Getting Game Path of Exile by Name");
+		Games g3 = gamesDao.getGameByName("Path of Exile");
+		System.out.println(g3);
 		System.out.println("\n");
 		
 		// REVIEWS DAOS
@@ -89,7 +93,7 @@ public class Inserter {
 		Reviews r1 = new Reviews(g1, "Great Game!7");
 		Reviews r2 = new Reviews(g1, "Awesome Game!8");
 		UserReviews ur1 = new UserReviews(r1, u1, 10.0f);
-		CriticReviews cr1 = new CriticReviews(r1, "Critic", 10.0f);
+		CriticReviews cr1 = new CriticReviews(r2, "Critic", 10.0f);
 		UserReviewsDao userReviewsDao = UserReviewsDao.getInstance();
 		CriticReviewsDao criticReviewsDao = CriticReviewsDao.getInstance();
 
