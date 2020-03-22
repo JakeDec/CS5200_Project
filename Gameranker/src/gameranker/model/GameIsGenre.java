@@ -59,4 +59,7 @@ public class GameIsGenre {
 		this.genre = genre;
 	}
 	
+	public String toString() {
+		return String.format("(%s) (%s)", game.toString(), genre.toString());
+	}
 }
