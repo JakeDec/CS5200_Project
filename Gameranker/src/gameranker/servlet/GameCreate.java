@@ -1,5 +1,6 @@
 package gameranker.servlet;
 import gameranker.dal.GamesDao;
+import gameranker.dal.PublishersDao;
 import gameranker.model.Games;
 import gameranker.model.Publishers;
 
@@ -48,13 +49,21 @@ public class GameCreate extends HttpServlet {
             messages.put("success", "Invalid Game");
         } else {
         	// Create the Game.
-        	String publisher = req.getParameter("publisher");
         	int year = Integer.valueOf(req.getParameter("releaseYear"));
 	        try {
-	        	Publishers pub = new Publishers(publisher);
-	        	Games game = new Games(gameName,pub,year);
-	        	game = gamesDao.create(game);
-	        	messages.put("success", "Successfully created " + gameName);
+	        	String publisherName = req.getParameter("publisher");
+	        	PublishersDao publishersDao = PublishersDao.getInstance();
+	        	Publishers publisher = publishersDao.getPublisherByName(publisherName);
+	        	
+	        	if (publisher == null) {
+		        	messages.put("success", "Failed to find publisher with name: " + publisherName);
+	        	}
+	        	else {
+	        		Games game = new Games(gameName, publisher, year);
+	        		game = gamesDao.create(game);
+	        		
+		        	messages.put("success", "Successfully created game with name: " + gameName);
+	        	}
 	        } catch (SQLException e) {
 				e.printStackTrace();
 				throw new IOException(e);
