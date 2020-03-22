@@ -18,13 +18,43 @@ import java.util.List;
 public class Inserter {
 
 	public static void main(String[] args) throws SQLException {
-		// DAO instances.
-		GameIsGenreDao gameIsGenreDao = GameIsGenreDao.getInstance();
-		GameOnPlatformDao gameOnPlatformDao = GameOnPlatformDao.getInstance();
-		GamesDao gamesDao = GamesDao.getInstance();
-		GenresDao genresDao = GenresDao.getInstance();
-		PlatformsDao platformsDao = PlatformsDao.getInstance();
 		PublishersDao publishersDao = PublishersDao.getInstance();
+		Publishers publisher = new Publishers("Gold Team");
+		publishersDao.create(publisher);
+		
+		GamesDao gamesDao = GamesDao.getInstance();
+		Games game = new Games("Gold Team Rules", publisher, 2020);
+		gamesDao.create(game);
+		
+		GenresDao genresDao = GenresDao.getInstance();
+		Genres genre = new Genres("Project");
+		genresDao.create(genre);
+		
+		GameIsGenreDao gameIsGenreDao = GameIsGenreDao.getInstance();
+		GameIsGenre gameIsGenre = new GameIsGenre(game, genre);
+		gameIsGenreDao.create(gameIsGenre);
+		
+		PlatformsDao platformsDao = PlatformsDao.getInstance();
+		Platforms platform = new Platforms("Classroom");
+		platformsDao.create(platform);
+		
+		GameOnPlatformDao gameOnPlatformDao = GameOnPlatformDao.getInstance();
+		GameOnPlatform gameOnPlatform = new GameOnPlatform(game, platform);
+		gameOnPlatformDao.create(gameOnPlatform);
+		
+		//
+		gameOnPlatformDao.delete(gameOnPlatform);
+		platformsDao.delete(platform);
+		gameIsGenreDao.delete(gameIsGenre);
+		genresDao.delete(genre);
+		gamesDao.delete(game);
+		publishersDao.delete(publisher);
+		
+		
+		
+		
+		
+		// DAO instances.
 		UserHasGameDao userHasGameDao = UserHasGameDao.getInstance();
 		UsersDao usersDao = UsersDao.getInstance();
 		

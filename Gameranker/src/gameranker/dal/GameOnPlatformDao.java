@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import gameranker.model.GameIsGenre;
 import gameranker.model.GameOnPlatform;
 
 public class GameOnPlatformDao {
@@ -23,18 +22,20 @@ public class GameOnPlatformDao {
 	
 	
 	public GameOnPlatform create(GameOnPlatform gameOnPlatform) throws SQLException {
-		String insert = "";
+		String insert = "INSERT INTO GameOnPlatform (GameIdFk, PlatformIdFk) " + 
+				"VALUES (?, ?);";
 		Connection connection = null;
 		PreparedStatement insertStmt = null;
 		try {
 			connection = connectionManager.getConnection();
 			insertStmt = connection.prepareStatement(insert);
-			
-			insertStmt.setString(1, user.getUserName());
+
+			insertStmt.setInt(1, gameOnPlatform.getGame().getGameId());
+			insertStmt.setInt(2, gameOnPlatform.getPlatform().getPlatformId());
 			
 			insertStmt.executeUpdate();
-			
-			return user;
+
+			return gameOnPlatform;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw e;
@@ -49,14 +50,15 @@ public class GameOnPlatformDao {
 	}
 
 	public GameOnPlatform delete(GameOnPlatform gameOnPlatform) throws SQLException {
-		String delete = "";
+		String delete = "DELETE FROM GameOnPlatform WHERE GameIdFk = ? AND PlatformIdFk = ;";
 		Connection connection = null;
 		PreparedStatement deleteStmt = null;
 		try {
 			connection = connectionManager.getConnection();
 			deleteStmt = connection.prepareStatement(delete);
-			
-			deleteStmt.setString(1, user.getUserName());
+
+			deleteStmt.setInt(1, gameOnPlatform.getGame().getGameId());
+			deleteStmt.setInt(2, gameOnPlatform.getPlatform().getPlatformId());
 			
 			deleteStmt.executeUpdate();
 

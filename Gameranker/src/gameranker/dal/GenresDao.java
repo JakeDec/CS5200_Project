@@ -2,8 +2,9 @@ package gameranker.dal;
 
 import gameranker.model.Genres;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -29,7 +30,7 @@ public class GenresDao {
 		ResultSet resultKey = null;
 		try {
 			connection = connectionManager.getConnection();
-			insertStmt = connection.prepareStatement(insert);
+			insertStmt = connection.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS);
 
 			insertStmt.setString(1, genre.getGenre());
 			

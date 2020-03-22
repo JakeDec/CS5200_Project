@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import gameranker.model.Platforms;
 
@@ -29,7 +30,7 @@ public class PlatformsDao {
 		ResultSet resultKey = null;
 		try {
 			connection = connectionManager.getConnection();
-			insertStmt = connection.prepareStatement(insert);
+			insertStmt = connection.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS);
 
 			insertStmt.setString(1, platform.getPlatformName());
 			

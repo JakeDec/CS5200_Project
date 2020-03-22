@@ -21,20 +21,21 @@ public class GameIsGenreDao {
 		return instance;
 	}
 	
-	
 	public GameIsGenre create(GameIsGenre gameIsGenre) throws SQLException {
-		String insert = "";
+		String insert = "INSERT INTO GameIsGenre (GameIdFk, GenreIdFk) " + 
+				"VALUES (?, ?);";
 		Connection connection = null;
 		PreparedStatement insertStmt = null;
 		try {
 			connection = connectionManager.getConnection();
 			insertStmt = connection.prepareStatement(insert);
-			
-			insertStmt.setString(1, user.getUserName());
+
+			insertStmt.setInt(1, gameIsGenre.getGame().getGameId());
+			insertStmt.setInt(2, gameIsGenre.getGenre().getGenreId());
 			
 			insertStmt.executeUpdate();
-			
-			return user;
+
+			return gameIsGenre;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw e;
@@ -47,16 +48,17 @@ public class GameIsGenreDao {
 			}
 		}
 	}
-
+	
 	public GameIsGenre delete(GameIsGenre gameIsGenre) throws SQLException {
-		String delete = "";
+		String delete = "DELETE FROM GameIsGenre WHERE GameIdFk = ? AND GenreIdFk = ;";
 		Connection connection = null;
 		PreparedStatement deleteStmt = null;
 		try {
 			connection = connectionManager.getConnection();
 			deleteStmt = connection.prepareStatement(delete);
-			
-			deleteStmt.setString(1, user.getUserName());
+
+			deleteStmt.setInt(1, gameIsGenre.getGame().getGameId());
+			deleteStmt.setInt(2, gameIsGenre.getGenre().getGenreId());
 			
 			deleteStmt.executeUpdate();
 
