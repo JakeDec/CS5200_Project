@@ -27,25 +27,42 @@ public class Inserter {
 		
 		System.out.println("Checking to see if id was added");
 		System.out.println(u1);
-		
+
 		System.out.println("Changing the userName to Jake Dec");
 		u1 = usersDao.setUserName(u1, "Jake Dec");
+		System.out.println(u1);
+		
+		System.out.println("Adding a steamId to Jake Dec");
+		u1 = usersDao.setSteamId(u1, 8675309);
 		System.out.println(u1);
 
 		System.out.println("Checking to see if getting user by id works");
 		Users u2 = usersDao.getUserById(1);
 		System.out.println(u2);
 		
-		
-		
-		
-		
 		usersDao.delete(u1);
 		
+		// PUBLISHER DAO
 		
-//		PublishersDao publishersDao = PublishersDao.getInstance();
-//		Publishers publisher = new Publishers("Gold Team");
-//		publishersDao.create(publisher);
+		PublishersDao publishersDao = PublishersDao.getInstance();
+
+		System.out.println("Creating Publisher GoldTeam");
+		Publishers p1 = new Publishers("GoldTeam");
+		p1 = publishersDao.create(p1);
+		System.out.println(p1);
+		
+		System.out.println("Updating publish name to Gold Team");
+		p1 = publishersDao.updatePublisherName(p1, "Gold Team");
+		System.out.println(p1);
+		
+		System.out.println("Getting Publisher 1 by ID");
+		Publishers p2 = publishersDao.getPublisherById(1);
+		System.out.println(p2);
+		
+		publishersDao.delete(p1);
+		
+		
+		
 //		
 //		GamesDao gamesDao = GamesDao.getInstance();
 //		Games game = new Games("Gold Team Rules", publisher, 2020);

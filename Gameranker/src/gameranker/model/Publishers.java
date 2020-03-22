@@ -61,4 +61,8 @@ public class Publishers {
 	public void setPublisherName(String publisherName) {
 		this.publisherName = publisherName;
 	}
+	
+	public String toString() {
+		return String.format("%d: %s", publisherId, publisherName);
+	}
 }

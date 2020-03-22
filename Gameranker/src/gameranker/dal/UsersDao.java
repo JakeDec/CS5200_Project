@@ -147,5 +147,32 @@ public class UsersDao {
 				updateStmt.close();
 			}
 		}
+	}	
+	
+	public Users setSteamId(Users user, int steamId) throws SQLException {
+		String updateBlogPost = "UPDATE Users SET SteamId=? WHERE UserId=?;";
+		Connection connection = null;
+		PreparedStatement updateStmt = null;
+		try {
+			connection = connectionManager.getConnection();
+			updateStmt = connection.prepareStatement(updateBlogPost);
+			updateStmt.setInt(1, steamId);
+			updateStmt.setInt(2, user.getUserId());
+			updateStmt.executeUpdate();
+
+			// Update the blogPost param before returning to the caller.
+			user.setSteamId(steamId);
+			return user;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if(connection != null) {
+				connection.close();
+			}
+			if(updateStmt != null) {
+				updateStmt.close();
+			}
+		}
 	}
 }
