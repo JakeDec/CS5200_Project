@@ -60,6 +60,10 @@ public class Genres {
 	public void setGenre(String genre) {
 		this.genre = genre;
 	}
+	
+	public String toString() {
+		return String.format("%d: %s", genreId, genre);
+	}
 
 	public String toString() {
 		return String.format("%s", genre);

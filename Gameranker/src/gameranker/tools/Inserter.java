@@ -117,9 +117,7 @@ public class Inserter {
 		
 		System.out.println("Getting all critc reviews by Critic");
 		List<CriticReviews> cr3 = criticReviewsDao.getReviewsByCriticName("Critic");
-		System.out.println(ur3);
-
-		System.out.println("\n");
+		System.out.println(cr3);
 		
 		// USERHASGAME DAO
 		
@@ -137,49 +135,39 @@ public class Inserter {
 			System.out.println(uhg);
 		}
 		
-		// GENRES DAO
-		
+		// GENRE DAO
 		GenresDao genresDao = GenresDao.getInstance();
-		Genres genre = new Genres("Project");
-		System.out.println("Creating a Genre entry");
-		genresDao.create(genre);
-		System.out.println(genre);
+		System.out.println("Creating a genre");
+		Genres genre1 = new Genres("SQL Project");
+		genre1 = genresDao.create(genre1);
+		System.out.println(genre1);
 		
-		// GAMEISGENRE DAO
+		System.out.println("Getting a Genre 1 by ID");
+		Genres genre2 = genresDao.getGenreById(1);
+		System.out.println(genre2);
 
+		System.out.println("\n");
+
+		// GAME IS GENRE DAO
 		GameIsGenreDao gameIsGenreDao = GameIsGenreDao.getInstance();
-		GameIsGenre gameIsGenre = new GameIsGenre(g1, genre);
-		System.out.println("Creating a Game Is Genre entry");
-		gameIsGenreDao.create(gameIsGenre);
-		System.out.println(gameIsGenre);
+		GameIsGenre gig1 = new GameIsGenre(g1, genre1);
+		System.out.println("Adding Genre to Game");
+		gig1 = gameIsGenreDao.create(gig1);
+		System.out.println(gig1);
 		
-		System.out.println("Getting games of the new genre:");
 		
-		List<GameIsGenre> gameIsGenres = gameIsGenreDao.getGameIsGenresByGameId(g1.getGameId());
+		System.out.println("Getting genres for " + g1.toString());
+		List<Genres> genres = gameIsGenreDao.getGenresForGame(g1);
+		System.out.println(genres);
 		
-		for (GameIsGenre gig : gameIsGenres) {
-			System.out.println(gig);
-		}
+		
+		System.out.println("\n");
+		
 		
 
-		// PLATFORM DAO
-		
-		PlatformsDao platformsDao = PlatformsDao.getInstance();
-		Platforms platform = new Platforms("Classroom");
-		platformsDao.create(platform);
-
-		// GAMEONPLATFORM DAO
-
-		GameOnPlatformDao gameOnPlatformDao = GameOnPlatformDao.getInstance();
-		GameOnPlatform gameOnPlatform = new GameOnPlatform(g1, platform);
-		gameOnPlatformDao.create(gameOnPlatform);
-		
 		// DELETE OBJECTS
-		
-		gameOnPlatformDao.delete(gameOnPlatform);
-		platformsDao.delete(platform);
-		gameIsGenreDao.delete(gameIsGenre);
-		genresDao.delete(genre);
+		gameIsGenreDao.delete(gig1);
+		genresDao.delete(genre1);
 		criticReviewsDao.delete(cr1);
 		userReviewsDao.delete(ur1);
 		gamesDao.delete(g1);
