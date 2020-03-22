@@ -59,5 +59,9 @@ public class GameOnPlatform {
 		this.platform = platform;
 	}
 	
+	public String toString() {
+		return String.format("(%s), (%s)", game, platform);
+	}
+	
 	
 }

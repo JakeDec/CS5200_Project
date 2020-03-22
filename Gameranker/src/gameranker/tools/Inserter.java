@@ -151,8 +151,38 @@ public class Inserter {
 		System.out.println("\n");
 		
 		
+		//PLATFORM - GAME ON PLATFORM
+		
+		PlatformsDao platformsDao = PlatformsDao.getInstance();
+		System.out.println("Creating a platform: Classroom");
+		Platforms plat1 = new Platforms("Classroom");
+		plat1 = platformsDao.create(plat1);
+		System.out.println(plat1);
+
+		System.out.println("Looking up platform 42");
+		Platforms plat2 = platformsDao.getPlatformById(42);
+		System.out.println(plat2);
+		System.out.println("\n");
+		
+
+		
+		GameOnPlatformDao gameOnPlatformDao = GameOnPlatformDao.getInstance();
+		
+		GameOnPlatform gop1 = new GameOnPlatform(g1, plat1);
+		System.out.println("Adding Platform to Game");
+		gameOnPlatformDao.create(gop1);
+		System.out.println(gop1);
+
+		System.out.println("Getting platforms for " + g2.toString());
+		List<Platforms> platforms = gameOnPlatformDao.getPlatformsForGame(g2);
+		System.out.println(platforms);
 		
 		
+		
+		
+		
+		gameOnPlatformDao.delete(gop1);
+		platformsDao.delete(plat1);
 		gameIsGenreDao.delete(gig1);
 		genresDao.delete(genre1);
 		criticReviewsDao.delete(cr1);
@@ -161,25 +191,11 @@ public class Inserter {
 		publishersDao.delete(p1);
 		usersDao.delete(u1);
 		
-		
-		
-		
-		
-		
+
 //		
 
 //		
-//		GameIsGenreDao gameIsGenreDao = GameIsGenreDao.getInstance();
-//		GameIsGenre gameIsGenre = new GameIsGenre(game, genre);
-//		gameIsGenreDao.create(gameIsGenre);
-//		
-//		PlatformsDao platformsDao = PlatformsDao.getInstance();
-//		Platforms platform = new Platforms("Classroom");
-//		platformsDao.create(platform);
-//		
-//		GameOnPlatformDao gameOnPlatformDao = GameOnPlatformDao.getInstance();
-//		GameOnPlatform gameOnPlatform = new GameOnPlatform(game, platform);
-//		gameOnPlatformDao.create(gameOnPlatform);
+
 //		
 //		//
 //		gameOnPlatformDao.delete(gameOnPlatform);

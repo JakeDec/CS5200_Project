@@ -2,10 +2,15 @@ package gameranker.dal;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import gameranker.model.GameOnPlatform;
 import gameranker.model.Games;
+import gameranker.model.Genres;
+import gameranker.model.Platforms;
 import gameranker.model.Publishers;
 
 public class GameOnPlatformDao {
@@ -73,6 +78,38 @@ public class GameOnPlatformDao {
 			}
 			if(deleteStmt != null) {
 				deleteStmt.close();
+			}
+		}
+	}
+	
+	public List<Platforms> getPlatformsForGame(Games game) throws SQLException {
+		String select = "SELECT PlatformIdFk,GameIdFk FROM GameOnPlatform WHERE GameIdFk=?";
+		Connection connection = null;
+		PreparedStatement selectStmt = null;
+		ResultSet results = null;
+		try {
+			connection = connectionManager.getConnection();
+			selectStmt = connection.prepareStatement(select);
+			selectStmt.setInt(1, game.getGameId());
+			results = selectStmt.executeQuery();
+			List<Platforms> list = new ArrayList<Platforms>();
+			while(results.next()) {
+				Platforms temp = PlatformsDao.getInstance().getPlatformById(results.getInt("PlatformIdFk"));
+				list.add(temp);
+			}
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if(connection != null) {
+				connection.close();
+			}
+			if(selectStmt != null) {
+				selectStmt.close();
+			}
+			if(results != null) {
+				results.close();
 			}
 		}
 	}

@@ -60,5 +60,9 @@ public class Platforms {
 	public void setPlatformName(String platformName) {
 		this.platformName = platformName;
 	}
+	
+	public String toString() {
+		return String.format("%d: %s", platformId, platformName);
+	}
 
 }
