@@ -32,11 +32,12 @@ protected UsersDao usersDao;
         req.setAttribute("messages", messages);
 
      // Retrieve a user and validate.
-        int userId = Integer.valueOf(req.getParameter("userid"));
+        int userId = 0;
         if (userId == 0) {
             messages.put("success", "Please enter a valid UserId.");
         } else {
         	try {
+        		userId = Integer.valueOf(req.getParameter("userid"));
         		Users user = usersDao.getUserByUserId(userId);
         		if(user == null) {
         			messages.put("success", "User does not exist.");
