@@ -19,8 +19,13 @@
 		</p>
 		
 		<p>
-			<label for="newusername">NewUserName</label>
+			<label for="newusername">New User Name (Optional)</label>
 			<input id="newusername" name="newusername" value="">
+		</p>
+		
+		<p>
+			<label for="newSteamId">New Steam ID (Optional)</label>
+			<input id="newSteamId" name="newSteamId" value="">
 		</p>
 		
 		

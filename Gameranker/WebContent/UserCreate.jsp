@@ -18,6 +18,10 @@
 			<input id="userName" name="userName" value="">
 		</p>
 		<p>
+			<label for="steamId">Steam ID (Optional)</label>
+			<input id="steamId" name="steamId" value="">
+		</p>
+		<p>
 			<input type="submit">
 		</p>
 	</form>

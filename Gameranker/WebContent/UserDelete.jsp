@@ -14,8 +14,8 @@
 	<h1>Delete User</h1>
 	<form action="userdelete" method="post">
 		<p>
-			<label for="userName">UserName</label>
-			<input id="userName" name="userName" value="">
+			<label for="userId">User ID</label>
+			<input id="userId" name="userId" value="">
 		</p>
 		<p>
 			<input type="submit">

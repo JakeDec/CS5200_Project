@@ -43,27 +43,29 @@ protected UsersDao usersDao;
         req.setAttribute("messages", messages);
 
         // Retrieve and validate name.
-        String userName = req.getParameter("username");
-        if (userName == null || userName.trim().isEmpty()) {
-            messages.put("title", "Invalid User");
-            messages.put("disableSubmit", "true");
-        } else {
-        	// Delete the Game.
-	        Users user = new Users(userName);
+        String userId = req.getParameter("userId");
+        int userIdInt = 0;
+        try {
+        	userIdInt = Integer.parseInt(userId);
 	        try {
+	        	Users user = UsersDao.getInstance().getUserByUserId(userIdInt);
+	        	String userString = user.toString();
 	        	user = usersDao.delete(user);
 	        	// Update the message.
-		        if (userName == null) {
-		            messages.put("title", "Successfully deleted " + userName);
+		        if (user == null) {
+		            messages.put("success", "Successfully deleted " + userString);
 		            messages.put("disableSubmit", "true");
 		        } else {
-		        	messages.put("title", "Failed to delete " + userName);
+		        	messages.put("success", "Failed to delete " + userId);
 		        	messages.put("disableSubmit", "false");
 		        }
 	        } catch (SQLException e) {
 				e.printStackTrace();
 				throw new IOException(e);
 	        }
+        } catch (NumberFormatException e) {
+            messages.put("success", "Invalid UserId");
+            messages.put("disableSubmit", "true");
         }
         
         req.getRequestDispatcher("/UserDelete.jsp").forward(req, resp);
