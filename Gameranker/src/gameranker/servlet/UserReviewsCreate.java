@@ -31,6 +31,9 @@ protected GamesDao gamesDao;
 	@Override
 	public void init() throws ServletException {
 		userReviewsDao = UserReviewsDao.getInstance();
+		reviewsDao = ReviewsDao.getInstance();
+		userDao = UsersDao.getInstance();
+		gamesDao = GamesDao.getInstance();
 	}
 	
 	@Override
@@ -61,6 +64,8 @@ protected GamesDao gamesDao;
 	        	float score = Float.valueOf(req.getParameter("score"));
 	        	String review = req.getParameter("review");
 	        	
+	        	System.out.println(gameId);
+	        	
 	        	Games game = gamesDao.getGameById(gameId); // Collect the Game
 	        	Users user = userDao.getUserByUserId(userId); // Collect the User
 	        	Reviews rev = new Reviews(game,review); //initialize a review
@@ -73,8 +78,7 @@ protected GamesDao gamesDao;
 	        	
 	        	messages.put("success", "Successfully created User Review");
 	        } catch (SQLException e) {
-				e.printStackTrace();
-				throw new IOException(e);
+	        	messages.put("success", "Failed to find create review.");
 	        }
         }
         

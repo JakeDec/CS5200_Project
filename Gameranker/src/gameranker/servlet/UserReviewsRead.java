@@ -26,6 +26,7 @@ protected UsersDao userDao;
 	@Override
 	public void init() throws ServletException {
 		userReviewDao = UserReviewsDao.getInstance();
+		userDao = UsersDao.getInstance();
 	}
 	
 	@Override
@@ -63,12 +64,13 @@ protected UsersDao userDao;
     public void doPost(HttpServletRequest req, HttpServletResponse resp)
     		throws ServletException, IOException {
         // Map for storing messages.
+		
         Map<String, String> messages = new HashMap<String, String>();
         req.setAttribute("messages", messages);
         
         // Retrieve and validate name.
      // user review is retrieved from the URL query string.
-        String userId = req.getParameter("userId");
+        String userId = req.getParameter("userid");
         if (userId == null || userId.trim().isEmpty()) {
             messages.put("success", "Please enter a valid User Id.");
         } else {
@@ -84,8 +86,8 @@ protected UsersDao userDao;
     			throw new IOException(e);
             }
         	messages.put("success", "Displaying results for " + user.getUserName());
+            req.setAttribute("reviews", reviews);
         }
-        req.setAttribute("userId", userId);
         
         req.getRequestDispatcher("/UserReviewsRead.jsp").forward(req, resp);
     }
