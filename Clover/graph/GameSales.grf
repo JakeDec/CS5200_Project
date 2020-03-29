@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Graph author="erics" created="Sun Mar 29 13:36:22 EDT 2020" guiVersion="5.6.0.18" id="1585506035431" licenseCode="Unlicensed" name="new-graph" showComponentDetails="true">
+<Global>
+<Metadata id="Metadata1">
+<Record fieldDelimiter=";" name="games" recordDelimiter="\n" type="delimited">
+<Field name="GameId" size="11" type="integer"/>
+<Field name="GameName" size="255" type="string"/>
+<Field name="PublisherIdFk" size="11" type="integer"/>
+<Field name="ReleaseYear" size="11" type="integer"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata0">
+<Record fieldDelimiter="," name="videoGameSales2016Fixed" previewAttachment="${DATAIN_DIR}/videoGameSales2016Fixed.csv" previewAttachmentCharset="UTF-8" quoteChar="both" quotedStrings="true" recordDelimiter="\r\n" skipSourceRows="1" type="delimited">
+<Field name="Name" type="string"/>
+<Field name="Platform" type="string"/>
+<Field name="Year_of_Release" type="integer"/>
+<Field name="Genre" type="string"/>
+<Field name="Publisher" type="string"/>
+<Field name="NA_Sales" scale="2" type="decimal"/>
+<Field name="EU_Sales" scale="2" type="decimal"/>
+<Field name="JP_Sales" scale="2" type="decimal"/>
+<Field name="Other_Sales" scale="2" type="decimal"/>
+<Field name="Global_Sales" scale="2" type="decimal"/>
+<Field name="Developer" type="string"/>
+<Field eofAsDelimiter="true" name="Rating" type="string"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata2">
+<Record fieldDelimiter="|" name="videoGameSalesWithId" recordDelimiter="\r\n" type="delimited">
+<Field name="GameId" size="11" type="integer"/>
+<Field name="Name" type="string"/>
+<Field name="Platform" type="string"/>
+<Field name="Year_of_Release" type="integer"/>
+<Field name="Genre" type="string"/>
+<Field name="Publisher" type="string"/>
+<Field name="NA_Sales" scale="2" type="decimal"/>
+<Field name="EU_Sales" scale="2" type="decimal"/>
+<Field name="JP_Sales" scale="2" type="decimal"/>
+<Field name="Other_Sales" scale="2" type="decimal"/>
+<Field name="Global_Sales" scale="2" type="decimal"/>
+<Field name="Developer" type="string"/>
+<Field eofAsDelimiter="true" name="Rating" type="string"/>
+</Record>
+</Metadata>
+<Connection database="MYSQL" dbURL="jdbc:mysql://hostname:3306/database" id="JDBC0" jdbcSpecific="MYSQL" name="gameranker" password="admin" type="JDBC" user="root"/>
+<Connection database="MYSQL" dbURL="jdbc:mysql://localhost:3306/gamerater?useSSL=false" id="JDBC2" jdbcSpecific="MYSQL" name="GameRater" password="admin" type="JDBC" user="root"/>
+<Connection database="MYSQL" dbURL="jdbc:mysql://hostname:3306/gamerater?useSSL=false" id="JDBC1" jdbcSpecific="MYSQL" name="NewConnection" password="admin" type="JDBC" user="root"/>
+<GraphParameters>
+<GraphParameterFile fileURL="workspace.prm"/>
+</GraphParameters>
+<Dictionary/>
+</Global>
+<Phase number="0">
+<Node dbConnection="JDBC2" dbTable="gamesales" guiName="DatabaseWriter" guiX="1178" guiY="564" id="DATABASE_WRITER" type="DB_OUTPUT_TABLE"/>
+<Node dbConnection="JDBC2" guiName="DBJoin" guiX="585" guiY="558" id="DBJOIN" joinKey="Name" type="DBJOIN">
+<attr name="sqlQuery"><![CDATA[select * from `gamerater`.`games` where `games`.`GameName` = ?]]></attr>
+</Node>
+<Node guiName="Reformat" guiX="928" guiY="564" id="REFORMAT" type="REFORMAT">
+<attr name="transform"><![CDATA[//#CTL2
+
+// Transforms input record into output record.
+function integer transform() {
+	$out.0.GameIdFk = $in.0.GameIdFk;
+	$out.0.NASales = decimal2double($in.0.NA_Sales);
+	$out.0.EUSales = decimal2double($in.0.EU_Sales);
+	$out.0.JPSales = decimal2double($in.0.JP_Sales);
+	$out.0.OtherSales = decimal2double($in.0.Other_Sales);
+	$out.0.GlobalSales = decimal2double($in.0.Global_Sales);
+
+	return ALL;
+}
+
+// Called during component initialization.
+// function boolean init() {}
+
+// Called during each graph run before the transform is executed. May be used to allocate and initialize resources
+// required by the transform. All resources allocated within this method should be released
+// by the postExecute() method.
+// function void preExecute() {}
+
+// Called only if transform() throws an exception.
+// function integer transformOnError(string errorMessage, string stackTrace) {}
+
+// Called during each graph run after the entire transform was executed. Should be used to free any resources
+// allocated within the preExecute() method.
+// function void postExecute() {}
+
+// Called to return a user-defined error message when an error occurs.
+// function string getMessage() {}
+]]></attr>
+</Node>
+<Node fileURL="${DATAIN_DIR}/videoGameSales2016Fixed.csv" guiName="UniversalDataReader" guiX="191" guiY="557" id="UNIVERSAL_DATA_READER" quotedStrings="true" type="DATA_READER"/>
+<Edge fromNode="DBJOIN:0" guiBendpoints="" guiRouter="Manhattan" id="Edge19" inPort="Port 0 (in)" metadata="Metadata2" outPort="Port 0 (joined records)" toNode="REFORMAT:0"/>
+<Edge fromNode="UNIVERSAL_DATA_READER:0" guiBendpoints="" guiRouter="Manhattan" id="Edge17" inPort="Port 0 (in)" metadata="Metadata0" outPort="Port 0 (output)" toNode="DBJOIN:0"/>
+</Phase>
+</Graph>
