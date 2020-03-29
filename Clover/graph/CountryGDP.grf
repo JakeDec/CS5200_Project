@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Graph author="jaked" created="Sun Mar 29 09:26:20 EDT 2020" guiVersion="5.6.0.18" id="1585488556822" licenseCode="CLP1DXXXXX29124275EX" name="CountryGDP" showComponentDetails="true">
+<Global>
+<Metadata id="Metadata0">
+<Record fieldDelimiter="," name="GPDGrowth" previewAttachment="${DATAIN_DIR}/GPDGrowth.csv" previewAttachmentCharset="UTF-8" quoteChar="both" quotedStrings="true" recordDelimiter="\r\n" skipSourceRows="1" type="delimited">
+<Field label="﻿LOCATION" name="LOCATION" type="string"/>
+<Field label="INDICATOR" name="INDICATOR" type="string"/>
+<Field label="SUBJECT" name="SUBJECT" type="string"/>
+<Field label="MEASURE" name="MEASURE" type="string"/>
+<Field label="FREQUENCY" name="FREQUENCY" type="string"/>
+<Field label="TIME" name="TIME" type="integer"/>
+<Field eofAsDelimiter="true" label="Value" name="Value" type="number"/>
+</Record>
+</Metadata>
+<Connection database="MYSQL" dbURL="jdbc:mysql://localhost:3306/gamerater?useSSL=false" id="JDBC0" jdbcSpecific="MYSQL" name="Jake'sConnection" password="WEstw00d" type="JDBC" user="root"/>
+<GraphParameters>
+<GraphParameterFile fileURL="workspace.prm"/>
+</GraphParameters>
+<RichTextNote backgroundColor="FAF6D6" folded="false" fontSize="medium" height="114" id="Note0" textColor="444444" width="146" x="273" y="182">
+<attr name="text"><![CDATA[Filter Out Unwanted Countries/Regions]]></attr>
+</RichTextNote>
+<RichTextNote backgroundColor="FAF6D6" folded="false" fontSize="medium" height="114" id="Note1" textColor="444444" width="146" x="468" y="182">
+<attr name="text"><![CDATA[Rename Regions from Abbrivations to Human Readable Strings]]></attr>
+</RichTextNote>
+<Dictionary/>
+</Global>
+<Phase number="0">
+<Node dbConnection="JDBC0" guiName="DatabaseWriter" guiX="684" guiY="102" id="DATABASE_WRITER" type="DB_OUTPUT_TABLE">
+<attr name="sqlQuery"><![CDATA[INSERT INTO `gamerater`.`regiongdp` (`Region`, `Year`, `GDP`)
+VALUES ($LOCATION, $TIME, $Value)]]></attr>
+</Node>
+<Node guiName="Filter" guiX="282" guiY="102" id="FILTER" type="EXT_FILTER">
+<attr name="filterExpression"><![CDATA[//#CTL2
+//#CTL2
+$in.0.LOCATION == "USA" ||
+$in.0.LOCATION == "JPN" ||
+$in.0.LOCATION == "EA17"||
+$in.0.LOCATION == "WLD";]]></attr>
+</Node>
+<Node guiName="Reformat" guiX="477" guiY="102" id="REFORMAT" type="REFORMAT">
+<attr name="transform"><![CDATA[//#CTL2
+
+// Transforms input record into output record.
+function integer transform() {
+	switch ($in.0.LOCATION) {
+		case "USA":
+		$out.0.LOCATION = "North America"; 
+		break;
+		case "JPN":
+		$out.0.LOCATION = "Japan"; 
+		break;
+		case "EA17":
+		$out.0.LOCATION = "PAL Region"; 
+		break;
+		case "WLD":
+		$out.0.LOCATION = "World"; 
+		break;
+	}
+    $out.0.TIME = $in.0.TIME;
+    $out.0.Value = $in.0.Value;
+	return ALL;
+}
+
+// Called during component initialization.
+// function boolean init() {}
+
+// Called during each graph run before the transform is executed. May be used to allocate and initialize resources
+// required by the transform. All resources allocated within this method should be released
+// by the postExecute() method.
+// function void preExecute() {}
+
+// Called only if transform() throws an exception.
+// function integer transformOnError(string errorMessage, string stackTrace) {}
+
+// Called during each graph run after the entire transform was executed. Should be used to free any resources
+// allocated within the preExecute() method.
+// function void postExecute() {}
+
+// Called to return a user-defined error message when an error occurs.
+// function string getMessage() {}
+]]></attr>
+</Node>
+<Node fileURL="${DATAIN_DIR}/GPDGrowth.csv" guiName="UniversalDataReader" guiX="66" guiY="102" id="UNIVERSAL_DATA_READER" type="DATA_READER"/>
+<Edge fromNode="FILTER:0" guiBendpoints="" guiRouter="Manhattan" id="Edge26" inPort="Port 0 (in)" outPort="Port 0 (accepted)" toNode="REFORMAT:0"/>
+<Edge fromNode="REFORMAT:0" guiBendpoints="" guiRouter="Manhattan" id="Edge31" inPort="Port 0 (in)" outPort="Port 0 (out)" toNode="DATABASE_WRITER:0"/>
+<Edge fromNode="UNIVERSAL_DATA_READER:0" guiBendpoints="" guiRouter="Manhattan" id="Edge13" inPort="Port 0 (in)" metadata="Metadata0" outPort="Port 0 (output)" toNode="FILTER:0"/>
+</Phase>
+</Graph>
