@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Graph author="erics" created="Sun Mar 29 13:36:22 EDT 2020" guiVersion="5.6.0.18" id="1585506035431" licenseCode="Unlicensed" name="new-graph" showComponentDetails="true">
 <Global>
-<Metadata id="Metadata1">
+<Metadata id="Metadata0">
 <Record fieldDelimiter=";" name="games" recordDelimiter="\n" type="delimited">
 <Field name="GameId" size="11" type="integer"/>
 <Field name="GameName" size="255" type="string"/>
-<Field name="PublisherIdFk" size="11" type="integer"/>
-<Field name="ReleaseYear" size="11" type="integer"/>
 </Record>
 </Metadata>
-<Metadata id="Metadata0">
+<Metadata id="Metadata1">
+<Record fieldDelimiter="|" name="recordName1" recordDelimiter="\r\n" type="delimited">
+<Field name="GameId" trim="true" type="integer"/>
+<Field name="GameName" type="string"/>
+<Field name="Sales" type="decimal"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata3">
 <Record fieldDelimiter="," name="videoGameSales2016Fixed" previewAttachment="${DATAIN_DIR}/videoGameSales2016Fixed.csv" previewAttachmentCharset="UTF-8" quoteChar="both" quotedStrings="true" recordDelimiter="\r\n" skipSourceRows="1" type="delimited">
 <Field name="Name" type="string"/>
 <Field name="Platform" type="string"/>
@@ -26,9 +31,9 @@
 </Record>
 </Metadata>
 <Metadata id="Metadata2">
-<Record fieldDelimiter="|" name="videoGameSalesWithId" recordDelimiter="\r\n" type="delimited">
-<Field name="GameId" size="11" type="integer"/>
+<Record fieldDelimiter="," name="videoGameSales2016FixedJoined" previewAttachment="${DATAIN_DIR}/videoGameSales2016Fixed.csv" previewAttachmentCharset="UTF-8" quoteChar="both" quotedStrings="true" recordDelimiter="\r\n" skipSourceRows="1" type="delimited">
 <Field name="Name" type="string"/>
+<Field name="GameId" type="integer"/>
 <Field name="Platform" type="string"/>
 <Field name="Year_of_Release" type="integer"/>
 <Field name="Genre" type="string"/>
@@ -42,8 +47,25 @@
 <Field eofAsDelimiter="true" name="Rating" type="string"/>
 </Record>
 </Metadata>
+<Metadata id="Metadata4">
+<Record fieldDelimiter="," name="videoGameSales2016FixedJoined_1" previewAttachment="${DATAIN_DIR}/videoGameSales2016Fixed.csv" previewAttachmentCharset="UTF-8" quoteChar="both" quotedStrings="true" recordDelimiter="\r\n" skipSourceRows="1" type="delimited">
+<Field name="Name" type="string"/>
+<Field name="Platform" type="string"/>
+<Field name="Year_of_Release" type="integer"/>
+<Field name="Genre" type="string"/>
+<Field name="Publisher" type="string"/>
+<Field name="NA_Sales" scale="2" type="decimal"/>
+<Field name="EU_Sales" scale="2" type="decimal"/>
+<Field name="JP_Sales" scale="2" type="decimal"/>
+<Field name="Other_Sales" scale="2" type="decimal"/>
+<Field name="Global_Sales" scale="2" type="decimal"/>
+<Field name="Developer" type="string"/>
+<Field name="GameId" type="integer"/>
+</Record>
+</Metadata>
 <Connection database="MYSQL" dbURL="jdbc:mysql://hostname:3306/database" id="JDBC0" jdbcSpecific="MYSQL" name="gameranker" password="admin" type="JDBC" user="root"/>
 <Connection database="MYSQL" dbURL="jdbc:mysql://localhost:3306/gamerater?useSSL=false" id="JDBC2" jdbcSpecific="MYSQL" name="GameRater" password="admin" type="JDBC" user="root"/>
+<Connection database="MYSQL" dbURL="jdbc:mysql://localhost:3306/gamerater?useSSL=false" id="JDBC3" jdbcSpecific="MYSQL" name="Jake'sConnection" password="WEstw00d" type="JDBC" user="root"/>
 <Connection database="MYSQL" dbURL="jdbc:mysql://hostname:3306/gamerater?useSSL=false" id="JDBC1" jdbcSpecific="MYSQL" name="NewConnection" password="admin" type="JDBC" user="root"/>
 <GraphParameters>
 <GraphParameterFile fileURL="workspace.prm"/>
@@ -51,21 +73,27 @@
 <Dictionary/>
 </Global>
 <Phase number="0">
-<Node dbConnection="JDBC2" dbTable="gamesales" guiName="DatabaseWriter" guiX="1178" guiY="564" id="DATABASE_WRITER" type="DB_OUTPUT_TABLE"/>
-<Node dbConnection="JDBC2" guiName="DBJoin" guiX="585" guiY="558" id="DBJOIN" joinKey="Name" type="DBJOIN">
-<attr name="sqlQuery"><![CDATA[select * from `gamerater`.`games` where `games`.`GameName` = ?]]></attr>
+<Node dbConnection="JDBC3" guiName="DatabaseReader" guiX="87" guiY="442" id="DATABASE_READER" type="DB_INPUT_TABLE">
+<attr name="sqlQuery"><![CDATA[SELECT GameId, GameName FROM games;]]></attr>
 </Node>
-<Node guiName="Reformat" guiX="928" guiY="564" id="REFORMAT" type="REFORMAT">
+<Node guiName="ExtHashJoin" guiX="401" guiY="376" id="EXT_HASH_JOIN" joinKey="$Name=$GameName" type="EXT_HASH_JOIN">
 <attr name="transform"><![CDATA[//#CTL2
 
 // Transforms input record into output record.
 function integer transform() {
-	$out.0.GameIdFk = $in.0.GameIdFk;
-	$out.0.NASales = decimal2double($in.0.NA_Sales);
-	$out.0.EUSales = decimal2double($in.0.EU_Sales);
-	$out.0.JPSales = decimal2double($in.0.JP_Sales);
-	$out.0.OtherSales = decimal2double($in.0.Other_Sales);
-	$out.0.GlobalSales = decimal2double($in.0.Global_Sales);
+	$out.0.Name = $in.0.Name;
+	$out.0.Platform = $in.0.Platform;
+	$out.0.Year_of_Release = $in.0.Year_of_Release;
+	$out.0.Genre = $in.0.Genre;
+	$out.0.Publisher = $in.0.Publisher;
+	$out.0.NA_Sales = $in.0.NA_Sales;
+	$out.0.EU_Sales = $in.0.EU_Sales;
+	$out.0.JP_Sales = $in.0.JP_Sales;
+	$out.0.Other_Sales = $in.0.Other_Sales;
+	$out.0.Global_Sales = $in.0.Global_Sales;
+	$out.0.Developer = $in.0.Developer;
+	$out.0.Rating = $in.0.Rating;
+	$out.0.GameId = $in.1.GameId;
 
 	return ALL;
 }
@@ -89,8 +117,10 @@ function integer transform() {
 // function string getMessage() {}
 ]]></attr>
 </Node>
-<Node fileURL="${DATAIN_DIR}/videoGameSales2016Fixed.csv" guiName="UniversalDataReader" guiX="191" guiY="557" id="UNIVERSAL_DATA_READER" quotedStrings="true" type="DATA_READER"/>
-<Edge fromNode="DBJOIN:0" guiBendpoints="" guiRouter="Manhattan" id="Edge19" inPort="Port 0 (in)" metadata="Metadata2" outPort="Port 0 (joined records)" toNode="REFORMAT:0"/>
-<Edge fromNode="UNIVERSAL_DATA_READER:0" guiBendpoints="" guiRouter="Manhattan" id="Edge17" inPort="Port 0 (in)" metadata="Metadata0" outPort="Port 0 (output)" toNode="DBJOIN:0"/>
+<Node debugPrint="true" guiName="Trash" guiX="705" guiY="398" id="TRASH" type="TRASH"/>
+<Node fileURL="${DATAIN_DIR}/videoGameSales2016Fixed.csv" guiName="UniversalDataReader" guiX="87" guiY="313" id="UNIVERSAL_DATA_READER" quotedStrings="true" type="DATA_READER"/>
+<Edge fromNode="DATABASE_READER:0" guiBendpoints="" guiRouter="Manhattan" id="Edge2" inPort="Port 1 (slave)" metadata="Metadata0" outPort="Port 0 (out)" toNode="EXT_HASH_JOIN:1"/>
+<Edge fromNode="EXT_HASH_JOIN:0" guiBendpoints="" guiRouter="Manhattan" id="Edge3" inPort="Port 0 (in)" metadata="Metadata2" outPort="Port 0 (out)" toNode="TRASH:0"/>
+<Edge fromNode="UNIVERSAL_DATA_READER:0" guiBendpoints="" guiRouter="Manhattan" id="Edge1" inPort="Port 0 (driver)" metadata="Metadata3" outPort="Port 0 (output)" toNode="EXT_HASH_JOIN:0"/>
 </Phase>
 </Graph>
