@@ -139,3 +139,16 @@ CREATE TABLE RegionGDP (
   CONSTRAINT RegionGDP_Pk
     PRIMARY KEY (Region,Year)
 ) ENGINE = InnoDB;
+
+CREATE TABLE GameSales (
+  GameIdFk INT NOT NULL,
+  NASales DECIMAL,
+  EUSales DECIMAL,
+  JPSales DECIMAL,
+  OtherSales DECIMAL,
+  GlobalSales DECIMAL,
+  CONSTRAINT GameSalesGamesFK
+    FOREIGN KEY (GameIdFk)
+    REFERENCES Games (GameId)
+    ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE = InnoDB;
