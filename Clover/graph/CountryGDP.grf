@@ -80,7 +80,7 @@ function integer transform() {
 // function string getMessage() {}
 ]]></attr>
 </Node>
-<Node fileURL="${DATAIN_DIR}/GPDGrowth.csv" guiName="UniversalDataReader" guiX="66" guiY="102" id="UNIVERSAL_DATA_READER" type="DATA_READER"/>
+<Node fileURL="${DATAIN_DIR}/GDPGrowth.csv" guiName="UniversalDataReader" guiX="66" guiY="102" id="UNIVERSAL_DATA_READER" type="DATA_READER"/>
 <Edge fromNode="FILTER:0" guiBendpoints="" guiRouter="Manhattan" id="Edge26" inPort="Port 0 (in)" outPort="Port 0 (accepted)" toNode="REFORMAT:0"/>
 <Edge fromNode="REFORMAT:0" guiBendpoints="" guiRouter="Manhattan" id="Edge31" inPort="Port 0 (in)" outPort="Port 0 (out)" toNode="DATABASE_WRITER:0"/>
 <Edge fromNode="UNIVERSAL_DATA_READER:0" guiBendpoints="" guiRouter="Manhattan" id="Edge13" inPort="Port 0 (in)" metadata="Metadata0" outPort="Port 0 (output)" toNode="FILTER:0"/>
