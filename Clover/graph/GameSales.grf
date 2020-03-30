@@ -50,10 +50,10 @@
 <Dictionary/>
 </Global>
 <Phase number="0">
-<Node dbConnection="JDBC2" guiName="DatabaseReader" guiX="107" guiY="431" id="DATABASE_READER" type="DB_INPUT_TABLE">
+<Node dbConnection="JDBC3" guiName="DatabaseReader" guiX="107" guiY="431" id="DATABASE_READER" type="DB_INPUT_TABLE">
 <attr name="sqlQuery"><![CDATA[SELECT GameId, GameName FROM games;]]></attr>
 </Node>
-<Node dbConnection="JDBC2" guiName="DatabaseWriter" guiX="668" guiY="376" id="DATABASE_WRITER" type="DB_OUTPUT_TABLE">
+<Node dbConnection="JDBC3" guiName="DatabaseWriter" guiX="668" guiY="376" id="DATABASE_WRITER" type="DB_OUTPUT_TABLE">
 <attr name="sqlQuery"><![CDATA[INSERT INTO `gamerater`.`gamesales` (`GameIdFk`, `NASales`, `EUSales`, `JPSales`, `OtherSales`, `GlobalSales`)
 VALUES ($GameId, $NA_Sales, $EU_Sales, $JP_Sales, $Other_Sales, $Global_Sales)]]></attr>
 </Node>
