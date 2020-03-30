@@ -24,6 +24,13 @@
 <Field length="32" name="GlobalSales" scale="0" type="decimal"/>
 </Record>
 </Metadata>
+<Metadata id="Metadata5">
+<Record fieldDelimiter=";" name="regiongdp" previewAttachmentCharset="UTF-8" recordDelimiter="\n" type="delimited">
+<Field name="Year" size="11" type="integer"/>
+<Field length="32" name="Global_Sales" scale="0" type="decimal"/>
+<Field name="GDPChange" size="12" type="number"/>
+</Record>
+</Metadata>
 <Metadata id="Metadata3">
 <Record fieldDelimiter="," name="videoGameSales2016Fixed" previewAttachment="${DATAIN_DIR}/videoGameSales2016Fixed.csv" previewAttachmentCharset="UTF-8" quoteChar="both" quotedStrings="true" recordDelimiter="\r\n" skipSourceRows="1" type="delimited">
 <Field name="Name" type="string"/>
@@ -67,10 +74,10 @@
 <Dictionary/>
 </Global>
 <Phase number="0">
-<Node dbConnection="JDBC3" guiName="DatabaseReader" guiX="107" guiY="431" id="DATABASE_READER" type="DB_INPUT_TABLE">
+<Node dbConnection="JDBC2" guiName="DatabaseReader" guiX="107" guiY="431" id="DATABASE_READER" type="DB_INPUT_TABLE">
 <attr name="sqlQuery"><![CDATA[SELECT GameId, GameName FROM games;]]></attr>
 </Node>
-<Node dbConnection="JDBC3" guiName="DatabaseWriter" guiX="668" guiY="376" id="DATABASE_WRITER" type="DB_OUTPUT_TABLE">
+<Node dbConnection="JDBC2" guiName="DatabaseWriter" guiX="668" guiY="376" id="DATABASE_WRITER" type="DB_OUTPUT_TABLE">
 <attr name="sqlQuery"><![CDATA[INSERT INTO `gamerater`.`gamesales` (`GameIdFk`, `NASales`, `EUSales`, `JPSales`, `OtherSales`, `GlobalSales`)
 VALUES ($GameId, $NA_Sales, $EU_Sales, $JP_Sales, $Other_Sales, $Global_Sales)]]></attr>
 </Node>
@@ -127,7 +134,7 @@ LEFT JOIN GameIsGenre ON GameIsGenre.GameIdFk = GameSales.GameIdFk
 LEFT JOIN Genres ON Genres.GenreId = GameIsGenre.GenreIdFk
 GROUP BY Genre]]></attr>
 </Node>
-<Node existingSheetsActions="DO_NOTHING" fileURL="${DATAOUT_DIR}/videoGameSales.xlsx" guiName="SpreadsheetDataWriter" guiX="668" guiY="521" id="SPREADSHEET_DATA_WRITER" type="SPREADSHEET_WRITER" writeMode="OVERWRITE_SHEET_IN_MEMORY">
+<Node existingSheetsActions="DO_NOTHING" fileURL="${DATAOUT_DIR}/videoGameSalesGenre.xlsx" guiName="SpreadsheetDataWriter" guiX="668" guiY="521" id="SPREADSHEET_DATA_WRITER" type="SPREADSHEET_WRITER" writeMode="OVERWRITE_SHEET_IN_MEMORY">
 <attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <mapping>
     <globalAttributes>
@@ -154,5 +161,51 @@ GROUP BY Genre]]></attr>
 ]]></attr>
 </Node>
 <Edge fromNode="DATABASE_READER1:0" guiBendpoints="" guiRouter="Manhattan" id="Edge6" inPort="Port 0 (input)" metadata="Metadata4" outPort="Port 0 (out)" toNode="SPREADSHEET_DATA_WRITER:0"/>
+</Phase>
+<Phase number="2">
+<Node dbConnection="JDBC2" guiName="DatabaseReader" guiX="401" guiY="680" id="DATABASE_READER2" type="DB_INPUT_TABLE">
+<attr name="sqlQuery"><![CDATA[SELECT blah.Year as Year, SUM(GlobalSales), blah.GDP as GDPChange 
+FROM GameSales
+INNER JOIN Games
+ON GameSales.GameIdFk = Games.GameId
+INNER JOIN (SELECT * FROM RegionGDP
+WHERE Region = "World") blah
+ON blah.Year = Games.ReleaseYear
+Group By Games.ReleaseYear
+Order by Year desc;]]></attr>
+</Node>
+<Node existingSheetsActions="DO_NOTHING" fileURL="${DATAOUT_DIR}/videoGameSalesGDP.xlsx" guiName="SpreadsheetDataWriter" guiX="668" guiY="680" id="SPREADSHEET_DATA_WRITER1" type="SPREADSHEET_WRITER" writeMode="OVERWRITE_SHEET_IN_MEMORY">
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mapping>
+    <globalAttributes>
+        <orientation>VERTICAL</orientation>
+        <step>1</step>
+        <writeHeader>true</writeHeader>
+    </globalAttributes>
+    <defaultSkip>1</defaultSkip>
+    <headerGroups>
+        <headerGroup skip="1">
+            <cloverField>Year</cloverField>
+            <headerRanges>
+                <headerRange begin="A1"/>
+            </headerRanges>
+        </headerGroup>
+        <headerGroup skip="1">
+            <cloverField>Global_Sales</cloverField>
+            <headerRanges>
+                <headerRange begin="B1"/>
+            </headerRanges>
+        </headerGroup>
+        <headerGroup skip="1">
+            <cloverField>GDPChange</cloverField>
+            <headerRanges>
+                <headerRange begin="C1"/>
+            </headerRanges>
+        </headerGroup>
+    </headerGroups>
+</mapping>
+]]></attr>
+</Node>
+<Edge fromNode="DATABASE_READER2:0" guiBendpoints="" guiRouter="Manhattan" id="Edge7" inPort="Port 0 (input)" metadata="Metadata5" outPort="Port 0 (out)" toNode="SPREADSHEET_DATA_WRITER1:0"/>
 </Phase>
 </Graph>
