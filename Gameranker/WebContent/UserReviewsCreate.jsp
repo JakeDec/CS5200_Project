@@ -12,6 +12,7 @@
 </head>
 <body>
 	<h1>Create UserReview</h1>
+	<a href="Index.jsp"><- Back</a><br />
 	<form action="userreviewscreate" method="post">
 		<p>
 			<label for="userId">UserId</label>

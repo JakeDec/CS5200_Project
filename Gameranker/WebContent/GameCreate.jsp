@@ -12,6 +12,7 @@
 </head>
 <body>
 	<h1>Create Game</h1>
+	<a href="Index.jsp"><- Back</a><br />
 	<form action="gamecreate" method="post">
 		<p>
 			<label for="gameName">GameName</label>

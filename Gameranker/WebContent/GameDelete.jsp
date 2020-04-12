@@ -12,6 +12,7 @@
 </head>
 <body>
 	<h1>Delete Game</h1>
+	<a href="Index.jsp"><- Back</a><br />
 	<form action="gamedelete" method="post">
 		<p>
 			<label for="gameName">GameName</label>

@@ -12,6 +12,7 @@
 </head>
 <body>
 	<h1>Delete Review</h1>
+	<a href="Index.jsp"><- Back</a><br />
 	<form action="userreviewsdelete" method="post">
 		<p>
 			<label for="id">ReviewId</label>

@@ -12,6 +12,7 @@
 </head>
 <body>
 	<h1>Create User</h1>
+	<a href="Index.jsp"><- Back</a><br />
 	<form action="usercreate" method="post">
 		<p>
 			<label for="userName">UserName</label>

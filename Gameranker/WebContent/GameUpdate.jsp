@@ -12,6 +12,7 @@
 </head>
 <body>
 	<h1>Update Game</h1>
+	<a href="Index.jsp"><- Back</a><br />
 	<form action="gameupdate" method="post">
 		<p>
 			<label for="gameid">GameId</label>

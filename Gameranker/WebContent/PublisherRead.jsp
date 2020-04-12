@@ -13,6 +13,7 @@
 <body>
 	<form action="publisherread" method="post">
 		<h1>Search for a Publisher by Publisher Name</h1>
+	<a href="Index.jsp"><- Back</a><br />
 		<p>
 			<label for="publishername">Publisher Name</label>
 			<input id="publishername" name="publishername" value="${fn:escapeXml(param.publishername)}">

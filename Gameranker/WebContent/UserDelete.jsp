@@ -12,6 +12,7 @@
 </head>
 <body>
 	<h1>Delete User</h1>
+	<a href="Index.jsp"><- Back</a><br />
 	<form action="userdelete" method="post">
 		<p>
 			<label for="userId">User ID</label>

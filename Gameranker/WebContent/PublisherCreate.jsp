@@ -12,6 +12,7 @@
 </head>
 <body>
 	<h1>Create Publisher</h1>
+	<a href="Index.jsp"><- Back</a><br />
 	<form action="publishercreate" method="post">
 		<p>
 			<label for="publisherName">Publisher Name</label>

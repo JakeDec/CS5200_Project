@@ -8,20 +8,12 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Update a Publisher Name</title>
+<title>Unpopular Games by Playtime</title>
 </head>
 <body>
-	<h1>Update Name</h1>
+	<h1>Unpopular Games by Playtime</h1>
 	<a href="Index.jsp"><- Back</a><br />
-	<form action="publisherupdate" method="post">
-		<p>
-			<label for="oldpublishername">Current Publisher Name</label>
-			<input id="oldpublishername" name="oldpublishername" value="">
-		</p>
-		<p>
-			<label for="newpublishername">New Publisher Name</label>
-			<input id=newpublishername name="newpublishername" value="">
-		</p>
+	<form action="query2" method="post">
 		<p>
 			<input type="submit">
 		</p>
@@ -30,5 +22,20 @@
 	<p>
 		<span id="successMessage"><b>${messages.success}</b></span>
 	</p>
+	<h1>Results</h1>
+        <table border="1">
+            <tr>
+                <th>Game Name</th>
+                <th>Average Playtime</th>
+                <th>Sample Users</th>
+            </tr>
+            <c:forEach items="${results}" var="result" >
+                <tr>
+                    <td><c:out value="${result.getResult1()}" /></td>
+                    <td><c:out value="${result.getResult2()}" /></td>
+                    <td><c:out value="${result.getResult3()}" /></td>
+                </tr>
+            </c:forEach>
+       </table>
 </body>
 </html>

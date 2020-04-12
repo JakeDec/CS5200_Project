@@ -12,6 +12,7 @@
 </head>
 <body>
 	<h1>Read a User</h1>
+	<a href="Index.jsp"><- Back</a><br />
 	<form action="userread" method="post">
 		<p>
 			<label for="userid">UserId</label>

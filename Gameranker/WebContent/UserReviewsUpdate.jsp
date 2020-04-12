@@ -12,6 +12,7 @@
 </head>
 <body>
 	<h1>Update Review</h1>
+	<a href="Index.jsp"><- Back</a><br />
 	<form action="userreviewsupdate" method="post">
 		<p>
 			<label for="reviewid">ReviewId</label>

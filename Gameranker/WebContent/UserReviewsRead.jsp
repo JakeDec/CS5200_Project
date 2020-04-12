@@ -13,6 +13,7 @@
 <body>
 	<form action="userreviewsread" method="post">
 		<h1>Search for User Reviews by User Id</h1>
+	<a href="Index.jsp"><- Back</a><br />
 		<p>
 			<label for="userid">User Id</label>
 			<input id="userid" name="userid" value="${fn:escapeXml(param.userid)}">

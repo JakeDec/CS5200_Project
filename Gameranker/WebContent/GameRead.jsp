@@ -11,8 +11,9 @@
 <title>Find a Game</title>
 </head>
 <body>
-	<form action="gameread" method="post">
 		<h1>Search for a Game by GameName</h1>
+	<a href="Index.jsp"><- Back</a><br />
+	<form action="gameread" method="post">
 		<p>
 			<label for="gamename">GameName</label>
 			<input id="gamename" name="gamename" value="${fn:escapeXml(param.gamename)}">

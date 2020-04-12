@@ -12,6 +12,7 @@
 </head>
 <body>
 	<h1>Delete Publisher</h1>
+	<a href="Index.jsp"><- Back</a><br />
 	<form action="publisherdelete" method="post">
 		<p>
 			<label for="publishername">Publisher Name</label>
